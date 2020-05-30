@@ -27,10 +27,10 @@ const Barrel = styled.div<{ screenWidth: number; rotation: number }>`
 `;
 
 const Cannon = () => {
-  const { screenWidth } = useGameContext();
+  const { screenWidth, cannonRotation } = useGameContext();
   return (
     <>
-      <Barrel screenWidth={screenWidth} rotation={0} />
+      <Barrel screenWidth={screenWidth} rotation={cannonRotation} />
       <CannonWrapper screenWidth={screenWidth}></CannonWrapper>
     </>
   );

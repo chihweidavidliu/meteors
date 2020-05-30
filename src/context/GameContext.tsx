@@ -12,6 +12,7 @@ interface IGameContextProps {
   questions: IQuestion[];
   score: number;
   lastDestroyed: IQuestion | null;
+  cannonRotation: number;
 }
 
 const initialprops: IGameContextProps = {
@@ -25,6 +26,7 @@ const initialprops: IGameContextProps = {
   questions: [],
   score: 0,
   lastDestroyed: null,
+  cannonRotation: 0,
 };
 
 const GameContext = createContext(initialprops);
