@@ -1,24 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useGameContext } from "../context/GameContext";
 import { IQuestion } from "../types/Question";
 import { IPosition } from "../types/Position";
+import { getRandomInt } from "../util/getRandomInt";
 
 interface IMeteorWrapperProps {
-  screenWidth: number;
+  meteorSize: number;
   left?: number;
   bottom?: number;
 }
 
 const MeteorWrapper = styled.div.attrs<IMeteorWrapperProps>((props) => ({
   style: {
-    left: `${props.left}px` || "0px",
-    bottom: `${props.bottom}px` || "0px",
+    left: `${props.left}px`,
+    bottom: `${props.bottom}px`,
   },
 }))<IMeteorWrapperProps>`
   position: absolute;
-  width: ${(props) => `${props.screenWidth / 10}px`};
-  height: ${(props) => `${props.screenWidth / 10}px`};
+  width: ${(props) => `${props.meteorSize}px`};
+  height: ${(props) => `${props.meteorSize}px`};
   border-radius: 50%;
   background: grey;
   color: black;
@@ -29,18 +30,30 @@ const MeteorWrapper = styled.div.attrs<IMeteorWrapperProps>((props) => ({
 
 export interface IMeteorProps {
   question: IQuestion;
-  position: IPosition;
 }
 
-const Meteor = ({ question, position }: IMeteorProps) => {
-  const { screenWidth } = useGameContext();
-  const { positionX, positionY } = position;
+const Meteor = ({ question }: IMeteorProps) => {
+  const { meteorSize, screenWidth, screenHeight } = useGameContext();
+  const [position, setPosition] = useState<IPosition>({
+    positionX: getRandomInt(screenWidth - meteorSize),
+    positionY: screenHeight,
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPosition((prevPosition) => {
+        return { ...prevPosition, positionY: prevPosition.positionY - 1 };
+      });
+    }, getRandomInt(20));
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <MeteorWrapper
-      screenWidth={screenWidth}
-      left={positionX}
-      bottom={positionY}
+      meteorSize={meteorSize}
+      left={position.positionX}
+      bottom={position.positionY}
     >
       {question.question}
     </MeteorWrapper>

@@ -5,6 +5,7 @@ import { GameContext } from "./context/GameContext";
 import Meteor, { IMeteorProps } from "./components/Meteor";
 import { IQuestion } from "./types/Question";
 import { getRandomInt } from "./util/getRandomInt";
+import { generateRandomPosition } from "./util/generateRandomPosition";
 
 const GlobalStyle = createGlobalStyle`
 html {
@@ -61,7 +62,7 @@ const PlayArea = styled.div<{ screenWidth: number; screenHeight: number }>`
   width: ${(props) => `${props.screenWidth}px`};
   height: ${(props) => `${props.screenHeight}px`};
   background-color: white;
-  overflow: hidden;
+  /* overflow: hidden; */
   border-radius: 4px;
 `;
 
@@ -88,34 +89,41 @@ function App() {
 
       stats: { correctlyAnswered: 0, appearances: 0 },
     },
+    {
+      id: shortid.generate(),
+      question: "boy",
+      answers: ["garçon"],
+
+      stats: { correctlyAnswered: 0, appearances: 0 },
+    },
   ];
 
   const [inputRef] = useState(createRef<HTMLInputElement>());
   const [isStarted, setIsStarted] = useState(false);
   const [questions, setQuestions] = useState<IQuestion[]>(initialQuestions);
-
-  const [meteors, setMeteors] = useState<IMeteorProps[]>([]);
+  const [activeQuestions, setActiveQuestions] = useState<IQuestion[]>([]);
 
   const [inputValue, setInputValue] = useState("");
   const screenWidth = 900;
   const screenHeight = 600;
+  const meteorSize = screenWidth / 10;
 
   const checkAnswer = (inputValue: string) => {
-    const answeredMeteor = meteors.find((meteor) =>
-      meteor.question.answers.includes(inputValue.trim())
+    const answeredQuestion = activeQuestions.find((question) =>
+      question.answers.includes(inputValue.trim())
     );
 
-    if (answeredMeteor) {
-      const { stats } = answeredMeteor.question;
+    if (answeredQuestion) {
+      const { stats } = answeredQuestion;
 
-      const updatedActiveQuestions = meteors.filter(
-        (meteor) => meteor.question.id !== answeredMeteor.question.id
+      const updatedActiveQuestions = activeQuestions.filter(
+        (question) => question.id !== answeredQuestion.id
       );
-      setMeteors(updatedActiveQuestions);
+      setActiveQuestions(updatedActiveQuestions);
       setQuestions([
         ...questions,
         {
-          ...answeredMeteor.question,
+          ...answeredQuestion,
           stats: {
             correctlyAnswered: stats.correctlyAnswered++,
             appearances: stats.appearances,
@@ -139,19 +147,15 @@ function App() {
       const chosen = questions[randomIndex];
       const { stats } = chosen;
 
-      setMeteors([
-        ...meteors,
-        {
-          position: {
-            positionX: 0,
-            positionY: 0,
-          },
-          question: {
+      setActiveQuestions((prevQuestions) => {
+        return [
+          ...prevQuestions,
+          {
             ...chosen,
             stats: { ...stats, appearances: stats.appearances++ },
           },
-        },
-      ]);
+        ];
+      });
 
       setQuestions(questions.filter((question) => question.id !== chosen.id));
     };
@@ -160,11 +164,11 @@ function App() {
       const interval = setInterval(() => {
         // TODO: activate questions at random
         activateQuestion();
-      }, 1000);
+      }, 800);
 
       return () => clearInterval(interval);
     }
-  }, [meteors, isStarted, questions]);
+  }, [isStarted, questions, meteorSize]);
 
   return (
     <GameContext.Provider
@@ -176,7 +180,8 @@ function App() {
         inputValue,
         setInputValue,
         questions,
-        meteors,
+
+        meteorSize,
       }}
     >
       <ThemeProvider theme={theme}>
@@ -191,9 +196,10 @@ function App() {
             </button>
           </OptionsWrapper>
           <PlayArea screenHeight={screenHeight} screenWidth={screenWidth}>
-            {meteors.map((meteor) => (
-              <Meteor key={meteor.question.id} {...meteor} />
-            ))}
+            {isStarted &&
+              activeQuestions.map((question) => (
+                <Meteor key={question.id} question={question} />
+              ))}
           </PlayArea>
           <StyledInput
             ref={inputRef}
