@@ -5,6 +5,7 @@ import { GameContext } from "./context/GameContext";
 import Meteor from "./components/Meteor";
 import { IQuestion } from "./types/Question";
 import { getRandomInt } from "./util/getRandomInt";
+import { useResizeHanlder } from "./hooks/useResizeHandler";
 
 const GlobalStyle = createGlobalStyle`
 html {
@@ -106,9 +107,9 @@ function App() {
 
   const [inputValue, setInputValue] = useState("");
 
-  const screenWidth = window.innerWidth * 0.8;
+  const { screenWidth } = useResizeHanlder();
   const screenHeight = 600;
-  const meteorSize = 60;
+  const meteorSize = 100;
 
   useEffect(() => {
     if (isStarted) {
@@ -206,6 +207,7 @@ function App() {
               onClick={() => {
                 setQuestions(initialQuestions);
                 setActiveQuestions([]);
+                setScore(0);
                 setIsStarted(!isStarted);
               }}
             >
