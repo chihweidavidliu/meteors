@@ -58,7 +58,8 @@ const OptionsWrapper = styled.div`
 
 const PlayArea = styled.div<{ screenWidth: number; screenHeight: number }>`
   position: relative;
-  width: ${(props) => `${props.screenWidth}px`};
+  width: 100%;
+  max-width: ${(props) => `${props.screenWidth}px`};
   height: ${(props) => `${props.screenHeight}px`};
   background-color: white;
   overflow: hidden;
