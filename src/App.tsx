@@ -5,7 +5,7 @@ import { GameContext } from "./context/GameContext";
 import Meteor from "./components/Meteor";
 import { IQuestion } from "./types/Question";
 import { getRandomInt } from "./util/getRandomInt";
-import { useResizeHanlder } from "./hooks/useResizeHandler";
+import { useResizeHandler } from "./hooks/useResizeHandler";
 
 const GlobalStyle = createGlobalStyle`
 html {
@@ -107,7 +107,7 @@ function App() {
 
   const [inputValue, setInputValue] = useState("");
 
-  const { screenWidth } = useResizeHanlder();
+  const { screenWidth } = useResizeHandler();
   const screenHeight = 600;
   const meteorSize = 100;
 

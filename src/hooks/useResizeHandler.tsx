@@ -1,7 +1,7 @@
 import { useState, useLayoutEffect } from "react";
 import { useMediaQuery } from "react-responsive";
 
-export const useResizeHanlder = () => {
+export const useResizeHandler = () => {
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1024px)" });
   const initialScreenWidth = isTabletOrMobile
     ? window.innerWidth
