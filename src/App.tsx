@@ -173,7 +173,7 @@ function App() {
       const interval = setInterval(() => {
         // TODO: activate questions at random
         activateQuestion();
-      }, 800);
+      }, 1500);
 
       return () => clearInterval(interval);
     }
