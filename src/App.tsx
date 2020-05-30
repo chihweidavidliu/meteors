@@ -5,7 +5,9 @@ import { GameContext } from "./context/GameContext";
 import Meteor from "./components/Meteor";
 import { useResizeHandler } from "./hooks/useResizeHandler";
 import { useQuestionHandler } from "./hooks/useQuestionHandler";
+import { setAudioVolume } from "./util/setAudioVolume";
 const levelUpSound = require("./assets/levelUp.mp3");
+const laserSound = require("./assets/laser.mp3");
 
 const GlobalStyle = createGlobalStyle`
 html {
@@ -108,6 +110,7 @@ function App() {
 
   const [inputRef] = useState(createRef<HTMLInputElement>());
   const [levelUpAudioRef] = useState(createRef<HTMLAudioElement>());
+  const [laserAudioRef] = useState(createRef<HTMLAudioElement>());
   const [isStarted, setIsStarted] = useState(false);
   const {
     questions,
@@ -134,6 +137,9 @@ function App() {
     );
 
     if (answeredQuestion) {
+      setAudioVolume(laserAudioRef, 0.4);
+      laserAudioRef?.current?.play();
+
       const { stats } = answeredQuestion;
 
       const updatedActiveQuestions = activeQuestions.filter(
@@ -153,11 +159,10 @@ function App() {
 
       const newScore = score + 1;
       if (newScore % 10 === 0) {
-        if (levelUpAudioRef?.current?.volume) {
-          levelUpAudioRef.current.volume = 0.4;
-        }
+        setAudioVolume(levelUpAudioRef, 0.4);
         levelUpAudioRef?.current?.play();
       }
+
       setScore(newScore);
     }
 
@@ -183,6 +188,7 @@ function App() {
         <AppWrapper>
           <GlobalStyle />
           <audio src={levelUpSound} ref={levelUpAudioRef}></audio>
+          <audio src={laserSound} ref={laserAudioRef}></audio>
           <TitleWrapper>
             <H1>Meteors</H1>
           </TitleWrapper>
