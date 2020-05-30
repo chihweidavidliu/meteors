@@ -59,7 +59,7 @@ const Meteor = ({ question }: IMeteorProps) => {
       if (shouldGameEnd) {
         setIsStarted(false);
       }
-    }, getRandomInt(20));
+    }, getRandomInt(20, 10));
 
     return () => clearInterval(interval);
   }, [setIsStarted]);

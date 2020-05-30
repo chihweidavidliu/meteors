@@ -2,10 +2,9 @@ import React, { useState, createRef, useEffect } from "react";
 import shortid from "shortid";
 import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
 import { GameContext } from "./context/GameContext";
-import Meteor, { IMeteorProps } from "./components/Meteor";
+import Meteor from "./components/Meteor";
 import { IQuestion } from "./types/Question";
 import { getRandomInt } from "./util/getRandomInt";
-import { generateRandomPosition } from "./util/generateRandomPosition";
 
 const GlobalStyle = createGlobalStyle`
 html {
@@ -62,7 +61,7 @@ const PlayArea = styled.div<{ screenWidth: number; screenHeight: number }>`
   width: ${(props) => `${props.screenWidth}px`};
   height: ${(props) => `${props.screenHeight}px`};
   background-color: white;
-  /* overflow: hidden; */
+  overflow: hidden;
   border-radius: 4px;
 `;
 
@@ -101,12 +100,19 @@ function App() {
   const [inputRef] = useState(createRef<HTMLInputElement>());
   const [isStarted, setIsStarted] = useState(false);
   const [questions, setQuestions] = useState<IQuestion[]>(initialQuestions);
+  const [score, setScore] = useState(0);
   const [activeQuestions, setActiveQuestions] = useState<IQuestion[]>([]);
 
   const [inputValue, setInputValue] = useState("");
   const screenWidth = 900;
   const screenHeight = 600;
   const meteorSize = screenWidth / 10;
+
+  useEffect(() => {
+    if (isStarted) {
+      return inputRef?.current?.focus();
+    }
+  }, [inputRef, isStarted]);
 
   const checkAnswer = (inputValue: string) => {
     const answeredQuestion = activeQuestions.find((question) =>
@@ -130,6 +136,9 @@ function App() {
           },
         },
       ]);
+
+      const newScore = score + 1;
+      setScore(newScore);
     }
 
     setInputValue("");
@@ -191,7 +200,13 @@ function App() {
             <H1>Meteors</H1>
           </TitleWrapper>
           <OptionsWrapper>
-            <button onClick={() => setIsStarted(!isStarted)}>
+            <button
+              onClick={() => {
+                setQuestions(initialQuestions);
+                setActiveQuestions([]);
+                setIsStarted(!isStarted);
+              }}
+            >
               {isStarted ? "End" : "Start"}
             </button>
           </OptionsWrapper>
@@ -201,6 +216,8 @@ function App() {
                 <Meteor key={question.id} question={question} />
               ))}
           </PlayArea>
+
+          {score}
           <StyledInput
             ref={inputRef}
             placeholder="Type translations here"
