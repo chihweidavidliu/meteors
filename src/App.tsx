@@ -2,8 +2,9 @@ import React, { useState, createRef, useEffect } from "react";
 import shortid from "shortid";
 import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
 import { GameContext } from "./context/GameContext";
-import Meteor from "./components/Meteor";
+import Meteor, { IMeteorProps } from "./components/Meteor";
 import { IQuestion } from "./types/Question";
+import { getRandomInt } from "./util/getRandomInt";
 
 const GlobalStyle = createGlobalStyle`
 html {
@@ -72,45 +73,55 @@ const StyledInput = styled.input`
 `;
 
 function App() {
-  const [inputRef] = useState(createRef<HTMLInputElement>());
-  const [isStarted, setIsStarted] = useState(false);
-  const [questions, setQuestions] = useState<IQuestion[]>([
+  const initialQuestions = [
     {
       id: shortid.generate(),
       question: "man",
       answers: ["homme"],
-      isActive: false,
+
       stats: { correctlyAnswered: 0, appearances: 0 },
     },
-  ]);
+    {
+      id: shortid.generate(),
+      question: "woman",
+      answers: ["femme"],
+
+      stats: { correctlyAnswered: 0, appearances: 0 },
+    },
+  ];
+
+  const [inputRef] = useState(createRef<HTMLInputElement>());
+  const [isStarted, setIsStarted] = useState(false);
+  const [questions, setQuestions] = useState<IQuestion[]>(initialQuestions);
+
+  const [meteors, setMeteors] = useState<IMeteorProps[]>([]);
 
   const [inputValue, setInputValue] = useState("");
   const screenWidth = 900;
   const screenHeight = 600;
 
   const checkAnswer = (inputValue: string) => {
-    const answeredQuestion = questions.find((question) =>
-      question.answers.includes(inputValue.trim())
+    const answeredMeteor = meteors.find((meteor) =>
+      meteor.question.answers.includes(inputValue.trim())
     );
 
-    if (answeredQuestion) {
-      const updatedQuestions = questions.map((question) => {
-        if (question.id === answeredQuestion.id) {
-          const { stats } = question;
+    if (answeredMeteor) {
+      const { stats } = answeredMeteor.question;
 
-          return {
-            ...question,
-            isActive: false,
-            stats: {
-              correctlyAnswered: stats.correctlyAnswered++,
-              appearances: stats.appearances++,
-            },
-          };
-        }
-        return question;
-      });
-
-      setQuestions(updatedQuestions);
+      const updatedActiveQuestions = meteors.filter(
+        (meteor) => meteor.question.id !== answeredMeteor.question.id
+      );
+      setMeteors(updatedActiveQuestions);
+      setQuestions([
+        ...questions,
+        {
+          ...answeredMeteor.question,
+          stats: {
+            correctlyAnswered: stats.correctlyAnswered++,
+            appearances: stats.appearances,
+          },
+        },
+      ]);
     }
 
     setInputValue("");
@@ -119,10 +130,41 @@ function App() {
 
   // setting active questions
   useEffect(() => {
-    setTimeout(() => {
-      // TODO: activate questions at random
-    }, 500);
-  }, []);
+    const activateQuestion = (): any => {
+      if (questions.length === 0) {
+        return;
+      }
+      // choose a random index
+      const randomIndex = getRandomInt(questions.length - 1);
+      const chosen = questions[randomIndex];
+      const { stats } = chosen;
+
+      setMeteors([
+        ...meteors,
+        {
+          position: {
+            positionX: 0,
+            positionY: 0,
+          },
+          question: {
+            ...chosen,
+            stats: { ...stats, appearances: stats.appearances++ },
+          },
+        },
+      ]);
+
+      setQuestions(questions.filter((question) => question.id !== chosen.id));
+    };
+
+    if (isStarted) {
+      const interval = setInterval(() => {
+        // TODO: activate questions at random
+        activateQuestion();
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [meteors, isStarted, questions]);
 
   return (
     <GameContext.Provider
@@ -134,6 +176,7 @@ function App() {
         inputValue,
         setInputValue,
         questions,
+        meteors,
       }}
     >
       <ThemeProvider theme={theme}>
@@ -148,11 +191,9 @@ function App() {
             </button>
           </OptionsWrapper>
           <PlayArea screenHeight={screenHeight} screenWidth={screenWidth}>
-            {questions
-              .filter((question) => question.isActive)
-              .map((question) => (
-                <Meteor key={question.id} question={question} />
-              ))}
+            {meteors.map((meteor) => (
+              <Meteor key={meteor.question.id} {...meteor} />
+            ))}
           </PlayArea>
           <StyledInput
             ref={inputRef}

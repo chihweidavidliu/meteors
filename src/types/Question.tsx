@@ -8,5 +8,4 @@ export interface IQuestion {
   question: string;
   answers: string[];
   stats: IQuestionStats;
-  isActive: boolean;
 }
