@@ -6,6 +6,8 @@ import Meteor from "./components/Meteor";
 import { useResizeHandler } from "./hooks/useResizeHandler";
 import { useQuestionHandler } from "./hooks/useQuestionHandler";
 import { setAudioVolume } from "./util/setAudioVolume";
+import { Button } from "./components/Button";
+import Cannon from "./components/Cannon";
 const levelUpSound = require("./assets/levelUp.mp3");
 const laserSound = require("./assets/laser.mp3");
 const errorSound = require("./assets/error.mp3");
@@ -198,7 +200,7 @@ function App() {
             <H1>Meteors</H1>
           </TitleWrapper>
           <OptionsWrapper>
-            <button
+            <Button
               onClick={() => {
                 setInputValue("");
                 setQuestions(initialQuestions);
@@ -208,13 +210,15 @@ function App() {
               }}
             >
               {isStarted ? "End" : "Start"}
-            </button>
+            </Button>
           </OptionsWrapper>
           <PlayArea screenHeight={screenHeight} screenWidth={screenWidth}>
             {isStarted &&
               activeQuestions.map((question) => (
                 <Meteor key={question.id} question={question} />
               ))}
+
+            <Cannon />
           </PlayArea>
 
           {score}

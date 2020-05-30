@@ -17,10 +17,10 @@ export const useResizeHandler = () => {
 
       setScreenWidth(() => width);
     };
-    document.addEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize);
 
-    return () => document.removeEventListener("resize", handleResize);
-  }, [isTabletOrMobile]);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [isTabletOrMobile, screenWidth]);
 
   return { screenWidth };
 };
