@@ -4,6 +4,7 @@ import { useGameContext } from "../context/GameContext";
 import { IQuestion } from "../types/Question";
 import { IPosition } from "../types/Position";
 import { getRandomInt } from "../util/getRandomInt";
+const asteroidImage = require("../assets/asteroid.png");
 
 interface IMeteorWrapperProps {
   meteorSize: number;
@@ -21,11 +22,29 @@ const MeteorWrapper = styled.div.attrs<IMeteorWrapperProps>((props) => ({
   width: ${(props) => `${props.meteorSize}px`};
   height: ${(props) => `${props.meteorSize}px`};
   border-radius: 50%;
-  background: grey;
   color: black;
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+interface ImageProps {
+  rotation: number;
+}
+const StyledImage = styled.img.attrs<ImageProps>((props) => ({
+  style: {
+    transform: `rotate(${props.rotation}deg)`,
+  },
+}))<ImageProps>`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  transition: transform 0.2s;
+`;
+
+const Question = styled.div`
+  z-index: 4;
 `;
 
 export interface IMeteorProps {
@@ -44,6 +63,16 @@ const Meteor = ({ question }: IMeteorProps) => {
     positionX: getRandomInt(screenWidth - meteorSize),
     positionY: screenHeight,
   });
+
+  const [rotation, setRotation] = useState(getRandomInt(360));
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRotation((prevRotation) => prevRotation + 1);
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     let shouldGameEnd = false;
@@ -92,7 +121,13 @@ const Meteor = ({ question }: IMeteorProps) => {
       left={position.positionX}
       bottom={position.positionY}
     >
-      {question.question}
+      <StyledImage
+        src={asteroidImage}
+        alt="asteroid"
+        width={meteorSize}
+        rotation={rotation}
+      />
+      <Question>{question.question}</Question>
     </MeteorWrapper>
   );
 };
