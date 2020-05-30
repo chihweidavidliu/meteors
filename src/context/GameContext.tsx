@@ -11,6 +11,7 @@ interface IGameContextProps {
   setInputValue: (value: string) => void;
   questions: IQuestion[];
   score: number;
+  lastDestroyed: IQuestion | null;
 }
 
 const initialprops: IGameContextProps = {
@@ -23,6 +24,7 @@ const initialprops: IGameContextProps = {
   setInputValue: () => {},
   questions: [],
   score: 0,
+  lastDestroyed: null,
 };
 
 const GameContext = createContext(initialprops);

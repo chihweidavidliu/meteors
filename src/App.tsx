@@ -70,6 +70,21 @@ const PlayArea = styled.div<{ screenWidth: number; screenHeight: number }>`
   background-color: white;
   overflow: hidden;
   border-radius: 4px;
+  background: #0f2027; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    #2c5364,
+    #203a43,
+    #0f2027
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #2c5364,
+    #203a43,
+    #0f2027
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+  border: 3px solid lightgrey;
 `;
 
 const StyledInput = styled.input`
@@ -121,6 +136,7 @@ function App() {
     setQuestions,
     activeQuestions,
     setActiveQuestions,
+    lastDestroyed,
   } = useQuestionHandler(initialQuestions, isStarted);
   const [score, setScore] = useState(0);
   const [inputValue, setInputValue] = useState("");
@@ -188,6 +204,7 @@ function App() {
         questions,
         score,
         meteorSize,
+        lastDestroyed,
       }}
     >
       <ThemeProvider theme={theme}>

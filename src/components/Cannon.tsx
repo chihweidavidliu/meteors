@@ -13,7 +13,7 @@ const CannonWrapper = styled.div<{ screenWidth: number }>`
   z-index: 2;
 `;
 
-const Barrel = styled.div<{ screenWidth: number }>`
+const Barrel = styled.div<{ screenWidth: number; rotation: number }>`
   background: lightgrey;
   height: 50px;
   width: 20px;
@@ -21,13 +21,16 @@ const Barrel = styled.div<{ screenWidth: number }>`
   left: ${(props) => `${props.screenWidth / 2 - 10}px`};
   bottom: 50px;
   border-radius: 10% 10% 0 0;
+  transform-origin: bottom;
+  transform: rotate(${(props) => props.rotation}deg);
+  transition: transform 0.2s;
 `;
 
 const Cannon = () => {
   const { screenWidth } = useGameContext();
   return (
     <>
-      <Barrel screenWidth={screenWidth} />
+      <Barrel screenWidth={screenWidth} rotation={0} />
       <CannonWrapper screenWidth={screenWidth}></CannonWrapper>
     </>
   );

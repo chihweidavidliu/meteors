@@ -8,6 +8,7 @@ export const useQuestionHandler = (
 ) => {
   const [questions, setQuestions] = useState<IQuestion[]>(initialQuestions);
   const [activeQuestions, setActiveQuestions] = useState<IQuestion[]>([]);
+  const [lastDestroyed, setLastDestroyed] = useState<IQuestion | null>(null);
 
   useEffect(() => {
     const activateQuestion = (): any => {
@@ -41,5 +42,12 @@ export const useQuestionHandler = (
     }
   }, [isStarted, questions]);
 
-  return { questions, setQuestions, activeQuestions, setActiveQuestions };
+  return {
+    questions,
+    setQuestions,
+    activeQuestions,
+    setActiveQuestions,
+    lastDestroyed,
+    setLastDestroyed,
+  };
 };
