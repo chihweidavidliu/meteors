@@ -8,6 +8,7 @@ import { useQuestionHandler } from "./hooks/useQuestionHandler";
 import { setAudioVolume } from "./util/setAudioVolume";
 const levelUpSound = require("./assets/levelUp.mp3");
 const laserSound = require("./assets/laser.mp3");
+const errorSound = require("./assets/error.mp3");
 
 const GlobalStyle = createGlobalStyle`
 html {
@@ -110,6 +111,7 @@ function App() {
 
   const [inputRef] = useState(createRef<HTMLInputElement>());
   const [levelUpAudioRef] = useState(createRef<HTMLAudioElement>());
+  const [errorAudioRef] = useState(createRef<HTMLAudioElement>());
   const [laserAudioRef] = useState(createRef<HTMLAudioElement>());
   const [isStarted, setIsStarted] = useState(false);
   const {
@@ -164,10 +166,12 @@ function App() {
       }
 
       setScore(newScore);
+    } else {
+      setAudioVolume(errorAudioRef, 0.4);
+      errorAudioRef?.current?.play();
     }
 
     setInputValue("");
-    inputRef?.current?.focus();
   };
 
   return (
@@ -189,12 +193,14 @@ function App() {
           <GlobalStyle />
           <audio src={levelUpSound} ref={levelUpAudioRef}></audio>
           <audio src={laserSound} ref={laserAudioRef}></audio>
+          <audio src={errorSound} ref={errorAudioRef}></audio>
           <TitleWrapper>
             <H1>Meteors</H1>
           </TitleWrapper>
           <OptionsWrapper>
             <button
               onClick={() => {
+                setInputValue("");
                 setQuestions(initialQuestions);
                 setActiveQuestions([]);
                 setScore(0);
@@ -217,10 +223,9 @@ function App() {
             placeholder="Type translations here"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            onBlur={() => checkAnswer(inputValue)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                inputRef?.current?.blur();
+                checkAnswer(inputValue);
               }
             }}
           />
