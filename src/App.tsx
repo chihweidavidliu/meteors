@@ -36,7 +36,7 @@ const AppWrapper = styled.div`
   grid-gap: 20px;
   background: ${(props) => props.theme.primaryColour};
   justify-items: center;
-  padding: 40px;
+  padding: 40px 0px;
 `;
 
 const TitleWrapper = styled.div`
@@ -104,9 +104,10 @@ function App() {
   const [activeQuestions, setActiveQuestions] = useState<IQuestion[]>([]);
 
   const [inputValue, setInputValue] = useState("");
-  const screenWidth = 900;
+
+  const screenWidth = window.innerWidth * 0.8;
   const screenHeight = 600;
-  const meteorSize = screenWidth / 10;
+  const meteorSize = 60;
 
   useEffect(() => {
     if (isStarted) {
