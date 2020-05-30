@@ -33,21 +33,36 @@ export interface IMeteorProps {
 }
 
 const Meteor = ({ question }: IMeteorProps) => {
-  const { meteorSize, screenWidth, screenHeight } = useGameContext();
+  const {
+    meteorSize,
+    screenWidth,
+    screenHeight,
+    setIsStarted,
+  } = useGameContext();
   const [position, setPosition] = useState<IPosition>({
     positionX: getRandomInt(screenWidth - meteorSize),
     positionY: screenHeight,
   });
 
   useEffect(() => {
+    let shouldGameEnd = false;
     const interval = setInterval(() => {
       setPosition((prevPosition) => {
-        return { ...prevPosition, positionY: prevPosition.positionY - 1 };
+        const newPositionY = prevPosition.positionY - 1;
+
+        if (newPositionY <= 0) {
+          shouldGameEnd = true;
+        }
+        return { ...prevPosition, positionY: newPositionY };
       });
+
+      if (shouldGameEnd) {
+        setIsStarted(false);
+      }
     }, getRandomInt(20));
 
     return () => clearInterval(interval);
-  }, []);
+  }, [setIsStarted]);
 
   return (
     <MeteorWrapper
