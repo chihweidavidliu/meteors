@@ -189,7 +189,7 @@ function App() {
         inputValue,
         setInputValue,
         questions,
-
+        score,
         meteorSize,
       }}
     >
