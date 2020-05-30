@@ -1,8 +1,9 @@
-import React, { useState, createRef } from "react";
+import React, { useState, createRef, useEffect } from "react";
 import shortid from "shortid";
 import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
 import { GameContext } from "./context/GameContext";
 import Meteor from "./components/Meteor";
+import { IQuestion } from "./types/Question";
 
 const GlobalStyle = createGlobalStyle`
 html {
@@ -73,9 +74,16 @@ const StyledInput = styled.input`
 function App() {
   const [inputRef] = useState(createRef<HTMLInputElement>());
   const [isStarted, setIsStarted] = useState(false);
-  const [questions, setQuestions] = useState([
-    { id: shortid.generate(), question: "man", answers: ["homme"] },
+  const [questions, setQuestions] = useState<IQuestion[]>([
+    {
+      id: shortid.generate(),
+      question: "man",
+      answers: ["homme"],
+      isActive: false,
+      stats: { correctlyAnswered: 0, appearances: 0 },
+    },
   ]);
+
   const [inputValue, setInputValue] = useState("");
   const screenWidth = 900;
   const screenHeight = 600;
@@ -86,9 +94,21 @@ function App() {
     );
 
     if (answeredQuestion) {
-      const updatedQuestions = questions.filter(
-        (question) => question.id !== answeredQuestion.id
-      );
+      const updatedQuestions = questions.map((question) => {
+        if (question.id === answeredQuestion.id) {
+          const { stats } = question;
+
+          return {
+            ...question,
+            isActive: false,
+            stats: {
+              correctlyAnswered: stats.correctlyAnswered++,
+              appearances: stats.appearances++,
+            },
+          };
+        }
+        return question;
+      });
 
       setQuestions(updatedQuestions);
     }
@@ -96,6 +116,13 @@ function App() {
     setInputValue("");
     inputRef?.current?.focus();
   };
+
+  // setting active questions
+  useEffect(() => {
+    setTimeout(() => {
+      // TODO: activate questions at random
+    }, 500);
+  }, []);
 
   return (
     <GameContext.Provider
@@ -121,9 +148,11 @@ function App() {
             </button>
           </OptionsWrapper>
           <PlayArea screenHeight={screenHeight} screenWidth={screenWidth}>
-            {questions.map((question) => (
-              <Meteor key={question.id} question={question} />
-            ))}
+            {questions
+              .filter((question) => question.isActive)
+              .map((question) => (
+                <Meteor key={question.id} question={question} />
+              ))}
           </PlayArea>
           <StyledInput
             ref={inputRef}
