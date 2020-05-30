@@ -6,6 +6,7 @@ import Meteor from "./components/Meteor";
 import { IQuestion } from "./types/Question";
 import { getRandomInt } from "./util/getRandomInt";
 import { useResizeHandler } from "./hooks/useResizeHandler";
+import { useQuestionHandler } from "./hooks/useQuestionHandler";
 
 const GlobalStyle = createGlobalStyle`
 html {
@@ -101,10 +102,13 @@ function App() {
 
   const [inputRef] = useState(createRef<HTMLInputElement>());
   const [isStarted, setIsStarted] = useState(false);
-  const [questions, setQuestions] = useState<IQuestion[]>(initialQuestions);
+  const {
+    questions,
+    setQuestions,
+    activeQuestions,
+    setActiveQuestions,
+  } = useQuestionHandler(initialQuestions, isStarted);
   const [score, setScore] = useState(0);
-  const [activeQuestions, setActiveQuestions] = useState<IQuestion[]>([]);
-
   const [inputValue, setInputValue] = useState("");
 
   const { screenWidth } = useResizeHandler();
@@ -147,40 +151,6 @@ function App() {
     setInputValue("");
     inputRef?.current?.focus();
   };
-
-  // setting active questions
-  useEffect(() => {
-    const activateQuestion = (): any => {
-      if (questions.length === 0) {
-        return;
-      }
-      // choose a random index
-      const randomIndex = getRandomInt(questions.length - 1);
-      const chosen = questions[randomIndex];
-      const { stats } = chosen;
-
-      setActiveQuestions((prevQuestions) => {
-        return [
-          ...prevQuestions,
-          {
-            ...chosen,
-            stats: { ...stats, appearances: stats.appearances++ },
-          },
-        ];
-      });
-
-      setQuestions(questions.filter((question) => question.id !== chosen.id));
-    };
-
-    if (isStarted) {
-      const interval = setInterval(() => {
-        // TODO: activate questions at random
-        activateQuestion();
-      }, 1500);
-
-      return () => clearInterval(interval);
-    }
-  }, [isStarted, questions, meteorSize]);
 
   return (
     <GameContext.Provider
