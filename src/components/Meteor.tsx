@@ -65,7 +65,7 @@ const Meteor = ({ question }: IMeteorProps) => {
         return getRandomInt(7, 5);
       }
 
-      return getRandomInt(20, 10);
+      return 5;
     };
 
     const interval = setInterval(() => {

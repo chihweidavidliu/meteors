@@ -3,10 +3,9 @@ import shortid from "shortid";
 import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
 import { GameContext } from "./context/GameContext";
 import Meteor from "./components/Meteor";
-import { IQuestion } from "./types/Question";
-import { getRandomInt } from "./util/getRandomInt";
 import { useResizeHandler } from "./hooks/useResizeHandler";
 import { useQuestionHandler } from "./hooks/useQuestionHandler";
+const levelUpSound = require("./assets/levelUp.mp3");
 
 const GlobalStyle = createGlobalStyle`
 html {
@@ -98,9 +97,17 @@ function App() {
 
       stats: { correctlyAnswered: 0, appearances: 0 },
     },
+    {
+      id: shortid.generate(),
+      question: "girl",
+      answers: ["fille"],
+
+      stats: { correctlyAnswered: 0, appearances: 0 },
+    },
   ];
 
   const [inputRef] = useState(createRef<HTMLInputElement>());
+  const [levelUpAudioRef] = useState(createRef<HTMLAudioElement>());
   const [isStarted, setIsStarted] = useState(false);
   const {
     questions,
@@ -145,6 +152,12 @@ function App() {
       ]);
 
       const newScore = score + 1;
+      if (newScore % 10 === 0) {
+        if (levelUpAudioRef?.current?.volume) {
+          levelUpAudioRef.current.volume = 0.4;
+        }
+        levelUpAudioRef?.current?.play();
+      }
       setScore(newScore);
     }
 
@@ -169,6 +182,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <AppWrapper>
           <GlobalStyle />
+          <audio src={levelUpSound} ref={levelUpAudioRef}></audio>
           <TitleWrapper>
             <H1>Meteors</H1>
           </TitleWrapper>
