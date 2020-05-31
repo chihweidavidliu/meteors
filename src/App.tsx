@@ -10,6 +10,7 @@ import { Button } from "./components/Button";
 import Cannon from "./components/Cannon";
 import { IQuestion } from "./types/Question";
 import { calculateCannonRotation } from "./util/calculateCannonRotation";
+const starsImage = require("./assets/stars.png");
 const levelUpSound = require("./assets/levelUp.mp3");
 const laserSound = require("./assets/laser.mp3");
 const errorSound = require("./assets/error.mp3");
@@ -57,8 +58,7 @@ const H1 = styled.h1`
 `;
 
 const Stars = styled.div`
-  background: black
-    url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/stars.png) repeat;
+  background: black url(${starsImage}) repeat;
   position: absolute;
   top: 0;
   bottom: 0;
