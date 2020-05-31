@@ -4,6 +4,7 @@ interface ICardProps {
   fadeIn?: boolean;
   background?: string;
   boxShadowColour?: string;
+  isWrappeed?: boolean;
 }
 
 const Card = styled.div<ICardProps>`
@@ -13,8 +14,9 @@ const Card = styled.div<ICardProps>`
   padding: 40px;
   color: black;
   border-radius: 10px;
-  box-shadow: 5px 5px 0px 2px
-    ${(props) => props.boxShadowColour || props.theme.primaryColour};
+  box-shadow: 5px 5px 0px 2px;
+  ${(props) => props.isWrappeed && " height: max-content;"}
+  ${(props) => props.boxShadowColour || props.theme.primaryColour};
   ${(props) => props.fadeIn && "animation: fadeIn 2s;"}
 
   @keyframes fadeIn {

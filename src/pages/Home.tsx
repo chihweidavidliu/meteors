@@ -59,7 +59,7 @@ const Home = () => {
         <P>A game to help remember things</P>
 
         <CardWrapper>
-          <Card fadeIn>
+          <Card fadeIn isWrappeed>
             <H2>Welcome</H2>
             <P>
               Meteors are hurtling towards Earth. Only you can save humanity...
@@ -71,7 +71,7 @@ const Home = () => {
               dates).
             </P>
           </Card>
-          <Card fadeIn>
+          <Card fadeIn isWrappeed>
             <H2>Create Questions</H2>
 
             <QuestionCreator />
