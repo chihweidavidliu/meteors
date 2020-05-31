@@ -24,6 +24,8 @@ html {
 
 const theme = {
   primaryColour: "#00404f",
+  green: "#54B948",
+  red: "#c13000",
 };
 
 function App() {

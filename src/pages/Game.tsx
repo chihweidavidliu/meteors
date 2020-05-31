@@ -87,32 +87,32 @@ const StyledInput = styled.input`
 `;
 
 function App() {
-  const initialQuestions = [
+  const initialQuestions: IQuestion[] = [
     {
       id: shortid.generate(),
-      question: "man",
-      answers: ["homme"],
+      term: "man",
+      definition: "homme",
 
       stats: { correctlyAnswered: 0, appearances: 0 },
     },
     {
       id: shortid.generate(),
-      question: "woman",
-      answers: ["femme"],
+      term: "woman",
+      definition: "femme",
 
       stats: { correctlyAnswered: 0, appearances: 0 },
     },
     {
       id: shortid.generate(),
-      question: "boy",
-      answers: ["garçon"],
+      term: "boy",
+      definition: "garçon",
 
       stats: { correctlyAnswered: 0, appearances: 0 },
     },
     {
       id: shortid.generate(),
-      question: "girl",
-      answers: ["fille"],
+      term: "girl",
+      definition: "fille",
 
       stats: { correctlyAnswered: 0, appearances: 0 },
     },
@@ -194,7 +194,7 @@ function App() {
 
   const destroyMeteor = async (answeredQuestion: IQuestion) => {
     const meteorElement = document.querySelector(
-      `#${answeredQuestion.question}`
+      `#${answeredQuestion.term}`
     ) as HTMLElement;
 
     if (
@@ -217,8 +217,10 @@ function App() {
   };
 
   const checkAnswer = (inputValue: string) => {
-    const answeredQuestion = activeQuestions.find((question) =>
-      question.answers.includes(inputValue.trim())
+    const answeredQuestion = activeQuestions.find(
+      (question) =>
+        question.definition.toLowerCase().trim() ===
+        inputValue.trim().toLowerCase()
     );
 
     if (answeredQuestion) {

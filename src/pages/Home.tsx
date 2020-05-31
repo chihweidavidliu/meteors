@@ -7,10 +7,11 @@ import meteorImage from "../assets/asteroid.png";
 import worldImage from "../assets/world.png";
 import Card from "../components/Card";
 import { P } from "../typography/P";
+import QuestionCreator from "../components/QuestionCreator/QuestionCreator";
 
 const Wrapper = styled.div`
   position: relative;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
   overflow: hidden;
   display: grid;
@@ -71,10 +72,20 @@ const Home = () => {
         <CardWrapper>
           <Card fadeIn>
             <H2>Welcome</H2>
-            <p>Meteors are hurtling towards Earth. Only you can save us...</p>
+            <P>
+              Meteors are hurtling towards Earth. Only you can save humanity...
+            </P>
+            <P>
+              Meteors helps you learn in an interactive way. Just input or
+              upload the words you wish to learn with their definition (they
+              could be anything - scientific terms, French verbs, important
+              dates).
+            </P>
           </Card>
           <Card fadeIn>
-            <H2>Create Flash Cards</H2>
+            <H2>Create Questions</H2>
+
+            <QuestionCreator />
           </Card>
         </CardWrapper>
       </Wrapper>

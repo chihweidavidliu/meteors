@@ -117,7 +117,7 @@ const Meteor = ({ question }: IMeteorProps) => {
 
   return (
     <MeteorWrapper
-      id={question.question}
+      id={question.term}
       data-position-x={position.positionX}
       data-position-y={position.positionY}
       meteorSize={meteorSize}
@@ -130,7 +130,7 @@ const Meteor = ({ question }: IMeteorProps) => {
         width={meteorSize}
         rotation={rotation}
       />
-      <Question>{question.question}</Question>
+      <Question>{question.term}</Question>
     </MeteorWrapper>
   );
 };

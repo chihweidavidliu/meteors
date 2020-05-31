@@ -5,7 +5,7 @@ export interface IQuestionStats {
 
 export interface IQuestion {
   id: string;
-  question: string;
-  answers: string[];
+  term: string;
+  definition: string;
   stats: IQuestionStats;
 }
