@@ -12,25 +12,29 @@ import { calculateCannonRotation } from "../util/calculateCannonRotation";
 import { useQuestionContext } from "../context/QuestionContext";
 import { useHistory } from "react-router-dom";
 import { StarryBackground } from "../components/Background/StarryBackground";
+import Card from "../components/Card";
+import { H1 } from "../typography/H1";
 const levelUpSound = require("../assets/levelUp.mp3");
 const laserSound = require("../assets/laser.mp3");
 const errorSound = require("../assets/error.mp3");
 
+const Instructions = styled(Card)`
+  position: absolute;
+  width: 300px;
+  height: 250px;
+  left: calc(50vw - 150px);
+  bottom: calc(50vh - 125px);
+  background: whitesmoke;
+  display: grid;
+  grid-gap: 30px;
+  grid-template-rows: max-content 1fr;
+
+  justify-content: center;
+  z-index: 3;
+`;
+
 const TitleWrapper = styled.div`
   text-align: center;
-`;
-
-const H1 = styled.h1`
-  margin: 0;
-  font-size: 36px;
-`;
-
-const OptionsWrapper = styled.div`
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  grid-template-rows: max-content max-content;
-  grid-gap: 30px;
-  align-items: center;
 `;
 
 const PlayArea = styled.div<{ screenWidth: number; screenHeight: number }>`
@@ -199,14 +203,12 @@ function Game() {
         laserLength,
       }}
     >
-      <StarryBackground>
-        <audio src={levelUpSound} ref={levelUpAudioRef}></audio>
-        <audio src={laserSound} ref={laserAudioRef}></audio>
-        <audio src={errorSound} ref={errorAudioRef}></audio>
-        <TitleWrapper>
-          <H1>Meteors</H1>
-        </TitleWrapper>
-        <OptionsWrapper>
+      {!isStarted && (
+        <Instructions>
+          <TitleWrapper>
+            <H1>Defend the Earth!</H1>
+          </TitleWrapper>
+
           <Button
             onClick={() => {
               // only reset this data when starting new game as we want to preserve results to display to user
@@ -220,7 +222,14 @@ function Game() {
           >
             {isStarted ? "End" : "Start"}
           </Button>
-        </OptionsWrapper>
+        </Instructions>
+      )}
+
+      <StarryBackground>
+        <audio src={levelUpSound} ref={levelUpAudioRef}></audio>
+        <audio src={laserSound} ref={laserAudioRef}></audio>
+        <audio src={errorSound} ref={errorAudioRef}></audio>
+
         <PlayArea screenHeight={screenHeight} screenWidth={screenWidth}>
           {isStarted &&
             activeQuestions.map((question) => (
