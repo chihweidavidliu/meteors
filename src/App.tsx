@@ -9,7 +9,7 @@ import { setAudioVolume } from "./util/setAudioVolume";
 import { Button } from "./components/Button";
 import Cannon from "./components/Cannon";
 import { IQuestion } from "./types/Question";
-import { radiansToDegrees } from "./util/radiansToDegrees";
+import { calculateCannonRotation } from "./util/calculateCannonRotation";
 const levelUpSound = require("./assets/levelUp.mp3");
 const laserSound = require("./assets/laser.mp3");
 const errorSound = require("./assets/error.mp3");
@@ -167,58 +167,6 @@ function App() {
     }, 100);
   };
 
-  const calculateCannonRotation = (meteorElement: HTMLElement) => {
-    const cannonPosition = { positionY: 50, positionX: screenWidth / 2 };
-
-    if (!meteorElement.dataset.positionX || !meteorElement.dataset.positionY) {
-      return { theta: 0, hypotenuse: 1000 };
-    }
-
-    // get meteor bottom-left coordinates and calculate center coordinates by adjusting for meteor size
-    const meteorPositionX =
-      parseInt(meteorElement.dataset.positionX) + meteorSize / 2;
-    const meteorPositionY =
-      parseInt(meteorElement.dataset.positionY) + meteorSize / 2;
-
-    if (cannonPosition.positionX === meteorPositionX) {
-      // shorting straight up
-      return { theta: 0, hypotenuse: meteorPositionY - 50 };
-    } else if (meteorPositionY <= 50) {
-      // shooting below gun pivot point
-
-      const adjacentLength = 50 - meteorPositionY;
-      const oppositeLength = meteorPositionX - cannonPosition.positionX;
-
-      const theta = radiansToDegrees(
-        Math.atan(oppositeLength / adjacentLength)
-      );
-
-      const sign = Math.sign(oppositeLength);
-      const isNegative = sign === -1;
-      const result = isNegative ? -180 - theta : 180 - theta;
-
-      const hypotenuse = Math.sqrt(
-        Math.pow(adjacentLength, 2) + Math.pow(oppositeLength, 2)
-      );
-
-      return { theta: result, hypotenuse };
-    } else {
-      // shooting at any other angle
-      const oppositeLength = meteorPositionX - cannonPosition.positionX;
-
-      const adjacentLength = meteorPositionY - 50;
-      const theta = radiansToDegrees(
-        Math.atan(oppositeLength / adjacentLength)
-      );
-
-      const hypotenuse = Math.sqrt(
-        Math.pow(adjacentLength, 2) + Math.pow(oppositeLength, 2)
-      );
-
-      return { theta, hypotenuse };
-    }
-  };
-
   const destroyMeteor = (answeredQuestion: IQuestion) => {
     const meteorElement = document.querySelector(
       `#${answeredQuestion.question}`
@@ -232,7 +180,12 @@ function App() {
       return;
     }
 
-    const { theta, hypotenuse } = calculateCannonRotation(meteorElement);
+    const { theta, hypotenuse } = calculateCannonRotation(
+      meteorElement,
+      screenWidth,
+      meteorSize
+    );
+
     fireCannon(theta, hypotenuse);
 
     setAudioVolume(laserAudioRef, 0.4);
