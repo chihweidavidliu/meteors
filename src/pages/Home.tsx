@@ -10,7 +10,7 @@ import { P } from "../typography/P";
 import QuestionCreator from "../components/QuestionCreator/QuestionCreator";
 
 const Wrapper = styled.div`
-  position: relative;
+  position: absolute;
   min-height: 100vh;
   width: 100vw;
   overflow: hidden;
@@ -19,17 +19,7 @@ const Wrapper = styled.div`
   grid-gap: 20px;
   justify-items: center;
   padding: 40px 0px;
-`;
-
-const Stars = styled.div`
   background: black url(${starsImage}) repeat;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: block;
-  z-index: 0;
 `;
 
 const Image = styled.img`
@@ -49,7 +39,6 @@ const CardWrapper = styled.div`
 const Home = () => {
   return (
     <>
-      <Stars />
       <Wrapper>
         <Image
           src={meteorImage}
