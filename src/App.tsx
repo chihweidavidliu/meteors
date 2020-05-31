@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { Switch, BrowserRouter as Router, Route } from "react-router-dom";
 import Game from "./pages/Game";
 import Home from "./pages/Home";
+import { createBlankQuestion } from "./util/createBlankQuestion";
+import { QuestionContext } from "./context/QuestionContext";
+import { IQuestion } from "./types/Question";
 
 const GlobalStyle = createGlobalStyle`
 html {
@@ -29,20 +32,32 @@ const theme = {
 };
 
 function App() {
+  const [questions, setQuestions] = useState([
+    createBlankQuestion(),
+    createBlankQuestion(),
+    createBlankQuestion(),
+  ]);
+
   return (
     <ThemeProvider theme={theme}>
-      <Router>
-        <GlobalStyle />
-
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route exact path="/play">
-            <Game />
-          </Route>
-        </Switch>
-      </Router>
+      <QuestionContext.Provider
+        value={{
+          questions,
+          setQuestions,
+        }}
+      >
+        <Router>
+          <GlobalStyle />
+          <Switch>
+            <Route exact path="/">
+              <Home />
+            </Route>
+            <Route exact path="/play">
+              <Game />
+            </Route>
+          </Switch>
+        </Router>
+      </QuestionContext.Provider>
     </ThemeProvider>
   );
 }

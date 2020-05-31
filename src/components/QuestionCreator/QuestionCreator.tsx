@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { IQuestion } from "../../types/Question";
 import shortid from "shortid";
 import QuestionInput from "./QuestionInput";
 import { Button } from "../Button";
+import { useQuestionContext } from "../../context/QuestionContext";
 
 const QuestionCreatorWrapper = styled.div``;
 
@@ -27,11 +28,7 @@ const createBlankQuestion = () => ({
 });
 
 const QuestionCreator = () => {
-  const [questions, setQuestions] = useState<IQuestion[]>([
-    createBlankQuestion(),
-    createBlankQuestion(),
-    createBlankQuestion(),
-  ]);
+  const { questions, setQuestions } = useQuestionContext();
 
   const handleQuestionUpdate = (updatedQuestion: IQuestion) => {
     setQuestions((prevQuestions) =>
