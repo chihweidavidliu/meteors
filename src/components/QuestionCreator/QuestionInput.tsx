@@ -96,7 +96,7 @@ const QuestionInput = ({
           placeholder="E.g. Bonjour"
           handleBlur={() => {
             if (!term) {
-              return setTermError("Definition is required");
+              return setTermError("Term is required");
             }
             handleQuestionUpdate({ ...question, term, definition });
           }}
