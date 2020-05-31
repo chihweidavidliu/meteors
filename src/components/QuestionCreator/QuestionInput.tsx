@@ -7,6 +7,7 @@ import { useThemeContext } from "../../hooks/useThemeContext";
 const QuestionInputWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr max-content;
+  grid-auto-rows: max-content;
   grid-gap: 30px;
   align-items: flex-end;
 
@@ -62,6 +63,8 @@ const Button = styled.button<IButtonProps>`
   }
 `;
 
+const ErrorBox = styled.div``;
+
 interface IQuestionInputProps {
   question: IQuestion;
   handleQuestionUpdate: (updatedQuestion: IQuestion) => void;
@@ -77,7 +80,9 @@ const QuestionInput = ({
   const { red } = themeContext;
 
   const [term, setTerm] = useState(question.term);
+  const [termError, setTermError] = useState("");
   const [definition, setDefinition] = useState(question.definition);
+  const [definitionError, setDefinitionError] = useState("");
 
   return (
     <QuestionInputWrapper>
@@ -86,10 +91,15 @@ const QuestionInput = ({
         <Input
           blurOnEnter
           value={term}
+          error={termError}
           handleChange={(e) => setTerm(e.target.value)}
-          handleBlur={() =>
-            handleQuestionUpdate({ ...question, term, definition })
-          }
+          placeholder="E.g. Bonjour"
+          handleBlur={() => {
+            if (!term) {
+              return setTermError("Definition is required");
+            }
+            handleQuestionUpdate({ ...question, term, definition });
+          }}
         />
       </Label>
 
@@ -98,10 +108,14 @@ const QuestionInput = ({
         <Input
           blurOnEnter
           value={definition}
+          error={definitionError}
           handleChange={(e) => setDefinition(e.target.value)}
-          handleBlur={() =>
-            handleQuestionUpdate({ ...question, term, definition })
-          }
+          handleBlur={() => {
+            if (!definition) {
+              return setDefinitionError("Definition is required");
+            }
+            handleQuestionUpdate({ ...question, term, definition });
+          }}
         />
       </Label>
 
