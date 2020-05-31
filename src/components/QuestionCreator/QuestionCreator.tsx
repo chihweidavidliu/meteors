@@ -17,6 +17,14 @@ const QuestionInputWrapper = styled.div`
   grid-template-columns: 1fr 1fr max-content;
   grid-gap: 30px;
   align-items: flex-end;
+
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid lightgray;
+  @media (max-width: 767px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const Label = styled.label`
