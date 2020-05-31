@@ -5,7 +5,6 @@ import Game from "./pages/Game";
 import Home from "./pages/Home";
 import { createBlankQuestion } from "./util/createBlankQuestion";
 import { QuestionContext } from "./context/QuestionContext";
-import { IQuestion } from "./types/Question";
 
 const GlobalStyle = createGlobalStyle`
 html {
