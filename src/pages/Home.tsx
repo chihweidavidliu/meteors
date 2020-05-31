@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { H1 } from "../typography/H1";
 import { H2 } from "../typography/H2";
@@ -8,6 +8,8 @@ import worldImage from "../assets/world.png";
 import Card from "../components/Card";
 import { P } from "../typography/P";
 import QuestionCreator from "../components/QuestionCreator/QuestionCreator";
+import { Button } from "../components/Button";
+import { useQuestionContext } from "../context/QuestionContext";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -36,7 +38,18 @@ const CardWrapper = styled.div`
   grid-gap: 40px;
 `;
 
+const TitleWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  height: 45px;
+  align-items: center;
+`;
+
 const Home = () => {
+  const { validateQuestions } = useQuestionContext();
+
+  const areQuestionsValid = validateQuestions();
+
   return (
     <>
       <Wrapper>
@@ -72,7 +85,14 @@ const Home = () => {
             </P>
           </Card>
           <Card fadeIn isWrappeed>
-            <H2>Create Questions</H2>
+            <TitleWrapper>
+              <H2>Create Questions</H2>
+              {areQuestionsValid && (
+                <Button type="button" disabled>
+                  Start Learning!
+                </Button>
+              )}
+            </TitleWrapper>
 
             <QuestionCreator />
           </Card>

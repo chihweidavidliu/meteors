@@ -63,8 +63,6 @@ const Button = styled.button<IButtonProps>`
   }
 `;
 
-const ErrorBox = styled.div``;
-
 interface IQuestionInputProps {
   question: IQuestion;
   handleQuestionUpdate: (updatedQuestion: IQuestion) => void;
@@ -96,7 +94,7 @@ const QuestionInput = ({
           placeholder="E.g. Bonjour"
           handleBlur={() => {
             if (!term) {
-              return setTermError("Term is required");
+              setTermError("Term is required");
             }
             handleQuestionUpdate({ ...question, term, definition });
           }}
@@ -108,11 +106,12 @@ const QuestionInput = ({
         <Input
           blurOnEnter
           value={definition}
+          placeholder="E.g. Hello"
           error={definitionError}
           handleChange={(e) => setDefinition(e.target.value)}
           handleBlur={() => {
             if (!definition) {
-              return setDefinitionError("Definition is required");
+              setDefinitionError("Definition is required");
             }
             handleQuestionUpdate({ ...question, term, definition });
           }}

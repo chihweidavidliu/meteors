@@ -8,6 +8,7 @@ interface IButtonTheme {
 
 interface IButtonProps {
   buttonTheme?: IButtonTheme;
+  disabled?: boolean;
 }
 
 export const Button = styled.button<IButtonProps>`

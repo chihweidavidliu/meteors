@@ -37,12 +37,25 @@ function App() {
     createBlankQuestion(),
   ]);
 
+  const validateQuestions = () => {
+    let isValid = true;
+
+    questions.forEach((question) => {
+      if (!question.definition || !question.term) {
+        isValid = false;
+      }
+    });
+
+    return isValid;
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <QuestionContext.Provider
         value={{
           questions,
           setQuestions,
+          validateQuestions,
         }}
       >
         <Router>

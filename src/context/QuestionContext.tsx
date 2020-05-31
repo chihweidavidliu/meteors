@@ -4,11 +4,13 @@ import { IQuestion } from "../types/Question";
 interface IQuestionContextProps {
   questions: IQuestion[];
   setQuestions: React.Dispatch<SetStateAction<IQuestion[]>>;
+  validateQuestions: () => boolean;
 }
 
 const initialprops: IQuestionContextProps = {
   questions: [],
   setQuestions: () => {},
+  validateQuestions: () => false,
 };
 
 const QuestionContext = createContext(initialprops);
