@@ -23,17 +23,15 @@ const Barrel = styled.div<{ screenWidth: number; rotation: number }>`
   border-radius: 10% 10% 0 0;
   transform-origin: bottom;
   transform: rotate(${(props) => props.rotation}deg);
-  transition: transform 0.1s;
 `;
 
-const Laser = styled.div<{ rotation: number }>`
+const Laser = styled.div`
   position: absolute;
-  height: 40px;
-  width: 10px;
+  bottom: 50px;
+  left: 3px;
+  height: 900px;
+  width: 6px;
   background: green;
-  transform-origin: bottom;
-  transform: rotate(${(props) => props.rotation}deg);
-  transition: transform 0.2s;
 `;
 
 const Cannon = () => {
@@ -41,7 +39,7 @@ const Cannon = () => {
   return (
     <>
       <Barrel screenWidth={screenWidth} rotation={cannonRotation}>
-        {isCannonFiring && <Laser rotation={cannonRotation} />}
+        {isCannonFiring && <Laser />}
       </Barrel>
       <CannonWrapper screenWidth={screenWidth}></CannonWrapper>
     </>

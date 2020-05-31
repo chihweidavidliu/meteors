@@ -168,7 +168,10 @@ function App() {
   const fireCannon = (angle: number) => {
     setIsCannonFiring(true);
     setCannonRotation(angle);
-    setIsCannonFiring(false);
+
+    setTimeout(() => {
+      setIsCannonFiring(false);
+    }, 100);
   };
 
   const cannonPosition = { positionY: 50, positionX: screenWidth / 2 };
