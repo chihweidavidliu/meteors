@@ -5,6 +5,7 @@ import Game from "./pages/Game";
 import Home from "./pages/Home";
 import { createBlankQuestion } from "./util/createBlankQuestion";
 import { QuestionContext } from "./context/QuestionContext";
+import NotFound from "./pages/NotFound";
 
 const GlobalStyle = createGlobalStyle`
 html {
@@ -67,6 +68,7 @@ function App() {
             <Route exact path="/play">
               <Game />
             </Route>
+            <Route component={NotFound} />
           </Switch>
         </Router>
       </QuestionContext.Provider>

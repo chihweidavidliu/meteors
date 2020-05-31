@@ -13,6 +13,7 @@ interface IButtonProps {
 
 export const Button = styled.button<IButtonProps>`
   font-size: 18px;
+  font-weight: bold;
   padding: 10px;
   background: ${(props) =>
     props?.buttonTheme?.primaryColour || props.theme.green};
