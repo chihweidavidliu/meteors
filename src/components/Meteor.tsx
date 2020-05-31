@@ -130,10 +130,7 @@ const Meteor = ({ question }: IMeteorProps) => {
         width={meteorSize}
         rotation={rotation}
       />
-      <Question>
-        {question.question}
-        <div>{`x: ${position.positionX}, y: ${position.positionY}`}</div>
-      </Question>
+      <Question>{question.question}</Question>
     </MeteorWrapper>
   );
 };

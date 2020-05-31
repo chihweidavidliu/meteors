@@ -197,23 +197,31 @@ function App() {
 
     if (cannonPosition.positionX === meteorPositionX) {
       fireCannon(0);
-    } else {
+    } else if (meteorPositionY <= 50) {
+      const adjacentLength = 50 - meteorPositionY;
       const oppositeLength = meteorPositionX - cannonPosition.positionX;
 
-      const adjacentLength = parseInt(meteorElement.dataset.positionY) - 50;
-      console.log("opposite length", oppositeLength);
-      console.log("adjacent length", adjacentLength);
       const theta = radiansToDegrees(
         Math.atan(oppositeLength / adjacentLength)
       );
 
-      console.log("theta", theta);
+      const sign = Math.sign(oppositeLength);
+      const isNegative = sign === -1;
+      const result = isNegative ? -180 - theta : 180 - theta;
+
+      fireCannon(result);
+    } else {
+      const oppositeLength = meteorPositionX - cannonPosition.positionX;
+
+      const adjacentLength = meteorPositionY - 50;
+      const theta = radiansToDegrees(
+        Math.atan(oppositeLength / adjacentLength)
+      );
+
       fireCannon(theta);
     }
 
     // wait for laser animation
-
-    // call destroyMeteor
 
     setAudioVolume(laserAudioRef, 0.4);
     laserAudioRef?.current?.play();
