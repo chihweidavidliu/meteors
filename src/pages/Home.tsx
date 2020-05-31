@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { H1 } from "../typography/H1";
 import { H2 } from "../typography/H2";
@@ -10,6 +10,7 @@ import { P } from "../typography/P";
 import QuestionCreator from "../components/QuestionCreator/QuestionCreator";
 import { Button } from "../components/Button";
 import { useQuestionContext } from "../context/QuestionContext";
+import { useHistory } from "react-router-dom";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -47,6 +48,7 @@ const TitleWrapper = styled.div`
 
 const Home = () => {
   const { validateQuestions } = useQuestionContext();
+  const history = useHistory();
 
   const areQuestionsValid = validateQuestions();
 
@@ -88,7 +90,7 @@ const Home = () => {
             <TitleWrapper>
               <H2>Create Questions</H2>
               {areQuestionsValid && (
-                <Button type="button" disabled>
+                <Button type="button" onClick={() => history.push("/play")}>
                   Start Learning!
                 </Button>
               )}

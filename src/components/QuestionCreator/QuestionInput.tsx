@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { IQuestion } from "../../types/Question";
 import Input from "../Input";
@@ -81,6 +81,18 @@ const QuestionInput = ({
   const [termError, setTermError] = useState("");
   const [definition, setDefinition] = useState(question.definition);
   const [definitionError, setDefinitionError] = useState("");
+
+  useEffect(() => {
+    if (definition) {
+      setDefinitionError(() => "");
+    }
+  }, [definition]);
+
+  useEffect(() => {
+    if (term) {
+      setTermError(() => "");
+    }
+  }, [term]);
 
   return (
     <QuestionInputWrapper>

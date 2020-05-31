@@ -1,5 +1,4 @@
 import React, { useState, createRef, useEffect } from "react";
-import shortid from "shortid";
 import styled from "styled-components";
 import { GameContext } from "../context/GameContext";
 import Meteor from "../components/Meteor";
@@ -10,6 +9,8 @@ import { Button } from "../components/Button";
 import Cannon from "../components/Cannon";
 import { IQuestion } from "../types/Question";
 import { calculateCannonRotation } from "../util/calculateCannonRotation";
+import { useQuestionContext } from "../context/QuestionContext";
+import { useHistory } from "react-router-dom";
 const starsImage = require("../assets/stars.png");
 const levelUpSound = require("../assets/levelUp.mp3");
 const laserSound = require("../assets/laser.mp3");
@@ -86,37 +87,10 @@ const StyledInput = styled.input`
   width: 300px;
 `;
 
-function App() {
-  const initialQuestions: IQuestion[] = [
-    {
-      id: shortid.generate(),
-      term: "man",
-      definition: "homme",
-
-      stats: { correctlyAnswered: 0, appearances: 0 },
-    },
-    {
-      id: shortid.generate(),
-      term: "woman",
-      definition: "femme",
-
-      stats: { correctlyAnswered: 0, appearances: 0 },
-    },
-    {
-      id: shortid.generate(),
-      term: "boy",
-      definition: "garçon",
-
-      stats: { correctlyAnswered: 0, appearances: 0 },
-    },
-    {
-      id: shortid.generate(),
-      term: "girl",
-      definition: "fille",
-
-      stats: { correctlyAnswered: 0, appearances: 0 },
-    },
-  ];
+function Game() {
+  const questionContext = useQuestionContext();
+  const initialQuestions = questionContext.questions;
+  const history = useHistory();
 
   const [inputRef] = useState(createRef<HTMLInputElement>());
   const [levelUpAudioRef] = useState(createRef<HTMLAudioElement>());
@@ -139,6 +113,12 @@ function App() {
   const { screenWidth } = useResizeHandler();
   const screenHeight = 600;
   const meteorSize = 100;
+
+  useEffect(() => {
+    if (initialQuestions.length === 0 || !questionContext.validateQuestions()) {
+      history.push("/");
+    }
+  }, [history, initialQuestions.length, questionContext]);
 
   useEffect(() => {
     if (isStarted) {
@@ -302,4 +282,4 @@ function App() {
   );
 }
 
-export default App;
+export default Game;
