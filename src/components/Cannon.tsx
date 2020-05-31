@@ -62,7 +62,7 @@ const BarrelHighlight = styled.div`
 const Laser = styled.div<{ laserLength: number }>`
   position: absolute;
   bottom: 50px;
-  left: 7px;
+  left: 5px;
   height: ${(props) => `${props.laserLength}px`};
   width: 6px;
   border-radius: 4px 4px 0px 0px;
