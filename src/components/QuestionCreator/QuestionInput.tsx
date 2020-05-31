@@ -9,7 +9,7 @@ const QuestionInputWrapper = styled.div`
   grid-template-columns: 1fr 1fr max-content;
   grid-auto-rows: max-content;
   grid-gap: 30px;
-  align-items: flex-end;
+  align-items: center;
 
   background: white;
   padding: 20px;
