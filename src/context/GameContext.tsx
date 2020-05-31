@@ -15,7 +15,8 @@ interface IGameContextProps {
   cannonRotation: number;
   setCannonRotation: (angle: number) => void;
   isCannonFiring: boolean;
-  fireCannon: (angle: number) => void;
+  laserLength: number;
+  fireCannon: (angle: number, laserLength: number) => void;
   destroyMeteor: (destroyed: IQuestion) => void;
 }
 
@@ -33,6 +34,7 @@ const initialprops: IGameContextProps = {
   cannonRotation: 0,
   setCannonRotation: () => {},
   isCannonFiring: false,
+  laserLength: 0,
   fireCannon: () => {},
   destroyMeteor: () => {},
 };

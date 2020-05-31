@@ -89,16 +89,6 @@ const PlayArea = styled.div<{ screenWidth: number; screenHeight: number }>`
   border: 3px solid lightgrey;
 `;
 
-const Guide = styled.div<{ left: number; bottom: number }>`
-  position: absolute;
-  left: ${(props) => `${props.left}px`};
-  bottom: ${(props) => `${props.bottom}px`};
-  width: 1px;
-  height: 1px;
-  background: red;
-  z-index: 100;
-`;
-
 const StyledInput = styled.input`
   color: ${(props) => props.theme.primaryColour};
   font-size: 18px;
@@ -145,6 +135,7 @@ function App() {
   const [isStarted, setIsStarted] = useState(false);
   const [cannonRotation, setCannonRotation] = useState(0);
   const [isCannonFiring, setIsCannonFiring] = useState(false);
+  const [laserLength, setLaserLength] = useState(1000);
   const {
     questions,
     setQuestions,
@@ -165,16 +156,68 @@ function App() {
     }
   }, [inputRef, isStarted]);
 
-  const fireCannon = (angle: number) => {
-    setIsCannonFiring(true);
+  const fireCannon = (angle: number, hypotenuse: number) => {
     setCannonRotation(angle);
+    setLaserLength(hypotenuse);
+    setIsCannonFiring(true);
 
     setTimeout(() => {
       setIsCannonFiring(false);
+      setLaserLength(1000);
     }, 100);
   };
 
-  const cannonPosition = { positionY: 50, positionX: screenWidth / 2 };
+  const calculateCannonRotation = (meteorElement: HTMLElement) => {
+    const cannonPosition = { positionY: 50, positionX: screenWidth / 2 };
+
+    if (!meteorElement.dataset.positionX || !meteorElement.dataset.positionY) {
+      return { theta: 0, hypotenuse: 1000 };
+    }
+
+    // get meteor bottom-left coordinates and calculate center coordinates by adjusting for meteor size
+    const meteorPositionX =
+      parseInt(meteorElement.dataset.positionX) + meteorSize / 2;
+    const meteorPositionY =
+      parseInt(meteorElement.dataset.positionY) + meteorSize / 2;
+
+    if (cannonPosition.positionX === meteorPositionX) {
+      // shorting straight up
+      return { theta: 0, hypotenuse: meteorPositionY - 50 };
+    } else if (meteorPositionY <= 50) {
+      // shooting below gun pivot point
+
+      const adjacentLength = 50 - meteorPositionY;
+      const oppositeLength = meteorPositionX - cannonPosition.positionX;
+
+      const theta = radiansToDegrees(
+        Math.atan(oppositeLength / adjacentLength)
+      );
+
+      const sign = Math.sign(oppositeLength);
+      const isNegative = sign === -1;
+      const result = isNegative ? -180 - theta : 180 - theta;
+
+      const hypotenuse = Math.sqrt(
+        Math.pow(adjacentLength, 2) + Math.pow(oppositeLength, 2)
+      );
+
+      return { theta: result, hypotenuse };
+    } else {
+      // shooting at any other angle
+      const oppositeLength = meteorPositionX - cannonPosition.positionX;
+
+      const adjacentLength = meteorPositionY - 50;
+      const theta = radiansToDegrees(
+        Math.atan(oppositeLength / adjacentLength)
+      );
+
+      const hypotenuse = Math.sqrt(
+        Math.pow(adjacentLength, 2) + Math.pow(oppositeLength, 2)
+      );
+
+      return { theta, hypotenuse };
+    }
+  };
 
   const destroyMeteor = (answeredQuestion: IQuestion) => {
     const meteorElement = document.querySelector(
@@ -189,42 +232,8 @@ function App() {
       return;
     }
 
-    // calculate rotation of cannon and fire cannon
-
-    // TODO: fix this
-    console.log("cannonPositionX", cannonPosition.positionX);
-    const meteorPositionX = parseInt(meteorElement.dataset.positionX);
-    const meteorPositionY = parseInt(meteorElement.dataset.positionY);
-    console.log("meteorPositionX", meteorPositionX);
-    console.log("meteorPositionY", meteorPositionY);
-
-    if (cannonPosition.positionX === meteorPositionX) {
-      fireCannon(0);
-    } else if (meteorPositionY <= 50) {
-      const adjacentLength = 50 - meteorPositionY;
-      const oppositeLength = meteorPositionX - cannonPosition.positionX;
-
-      const theta = radiansToDegrees(
-        Math.atan(oppositeLength / adjacentLength)
-      );
-
-      const sign = Math.sign(oppositeLength);
-      const isNegative = sign === -1;
-      const result = isNegative ? -180 - theta : 180 - theta;
-
-      fireCannon(result);
-    } else {
-      const oppositeLength = meteorPositionX - cannonPosition.positionX;
-
-      const adjacentLength = meteorPositionY - 50;
-      const theta = radiansToDegrees(
-        Math.atan(oppositeLength / adjacentLength)
-      );
-
-      fireCannon(theta);
-    }
-
-    // wait for laser animation
+    const { theta, hypotenuse } = calculateCannonRotation(meteorElement);
+    fireCannon(theta, hypotenuse);
 
     setAudioVolume(laserAudioRef, 0.4);
     laserAudioRef?.current?.play();
@@ -288,6 +297,7 @@ function App() {
         destroyMeteor,
         isCannonFiring,
         fireCannon,
+        laserLength,
       }}
     >
       <ThemeProvider theme={theme}>
@@ -317,12 +327,7 @@ function App() {
               activeQuestions.map((question) => (
                 <Meteor key={question.id} question={question} />
               ))}
-
             <Cannon />
-            <Guide
-              left={cannonPosition.positionX}
-              bottom={cannonPosition.positionY}
-            />
           </PlayArea>
 
           {score}

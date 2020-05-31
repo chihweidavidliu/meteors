@@ -25,21 +25,28 @@ const Barrel = styled.div<{ screenWidth: number; rotation: number }>`
   transform: rotate(${(props) => props.rotation}deg);
 `;
 
-const Laser = styled.div`
+const Laser = styled.div<{ laserLength: number }>`
   position: absolute;
   bottom: 50px;
-  left: 3px;
-  height: 900px;
+  left: 7px;
+  height: ${(props) => `${props.laserLength}px`};
   width: 6px;
   background: green;
+  border-radius: 4px;
 `;
 
 const Cannon = () => {
-  const { screenWidth, cannonRotation, isCannonFiring } = useGameContext();
+  const {
+    screenWidth,
+    cannonRotation,
+    isCannonFiring,
+    laserLength,
+    meteorSize,
+  } = useGameContext();
   return (
     <>
       <Barrel screenWidth={screenWidth} rotation={cannonRotation}>
-        {isCannonFiring && <Laser />}
+        {isCannonFiring && <Laser laserLength={laserLength - meteorSize / 2} />}
       </Barrel>
       <CannonWrapper screenWidth={screenWidth}></CannonWrapper>
     </>
