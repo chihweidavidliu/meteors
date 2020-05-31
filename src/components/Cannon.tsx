@@ -65,23 +65,23 @@ const Laser = styled.div<{ laserLength: number }>`
   left: 7px;
   height: ${(props) => `${props.laserLength}px`};
   width: 6px;
-
   border-radius: 4px 4px 0px 0px;
-  animation: shoot 0.7s;
-  @keyframes shoot {
-    0% {
-      background: green;
-      opacity: 0;
-      border: 2px solid transparent;
+  animation: glow 0.7s;
+  background-color: white;
+  box-shadow: 0px 0px 10px, 0px 0px 2px inset;
+
+  @keyframes glow {
+    from {
+      color: lime;
+      box-shadow: 0 0 9px lime;
     }
-    75% {
-      opacity: 1;
-      background: green;
-      border: 2px solid lightgreen;
+    50% {
+      color: lime;
+      box-shadow: 0 0 18px lime;
     }
-    100% {
-      opacity: 0;
-      border: 2px solid transparent;
+    to {
+      color: lime;
+      box-shadow: 0 0 9px lime;
     }
   }
 `;
