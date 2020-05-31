@@ -11,21 +11,10 @@ import { IQuestion } from "../types/Question";
 import { calculateCannonRotation } from "../util/calculateCannonRotation";
 import { useQuestionContext } from "../context/QuestionContext";
 import { useHistory } from "react-router-dom";
-const starsImage = require("../assets/stars.png");
+import { StarryBackground } from "../components/Background/StarryBackground";
 const levelUpSound = require("../assets/levelUp.mp3");
 const laserSound = require("../assets/laser.mp3");
 const errorSound = require("../assets/error.mp3");
-
-const GameWrapper = styled.div`
-  min-height: 100vh;
-  min-width: 100vw;
-  display: grid;
-  grid-auto-rows: max-content;
-  grid-gap: 20px;
-  background: ${(props) => props.theme.primaryColour};
-  justify-items: center;
-  padding: 40px 0px;
-`;
 
 const TitleWrapper = styled.div`
   text-align: center;
@@ -34,17 +23,6 @@ const TitleWrapper = styled.div`
 const H1 = styled.h1`
   margin: 0;
   font-size: 36px;
-`;
-
-const Stars = styled.div`
-  background: black url(${starsImage}) repeat;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: block;
-  z-index: 0;
 `;
 
 const OptionsWrapper = styled.div`
@@ -60,22 +38,9 @@ const PlayArea = styled.div<{ screenWidth: number; screenHeight: number }>`
   width: 100%;
   max-width: ${(props) => `${props.screenWidth}px`};
   height: ${(props) => `${props.screenHeight}px`};
-  background-color: white;
+
   overflow: hidden;
   border-radius: 4px;
-  background: #0f2027; /* fallback for old browsers */
-  background: -webkit-linear-gradient(
-    to right,
-    #2c5364,
-    #203a43,
-    #0f2027
-  ); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(
-    to right,
-    #2c5364,
-    #203a43,
-    #0f2027
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
   border: 3px solid lightgrey;
 `;
@@ -234,7 +199,7 @@ function Game() {
         laserLength,
       }}
     >
-      <GameWrapper>
+      <StarryBackground>
         <audio src={levelUpSound} ref={levelUpAudioRef}></audio>
         <audio src={laserSound} ref={laserAudioRef}></audio>
         <audio src={errorSound} ref={errorAudioRef}></audio>
@@ -257,7 +222,6 @@ function Game() {
           </Button>
         </OptionsWrapper>
         <PlayArea screenHeight={screenHeight} screenWidth={screenWidth}>
-          <Stars />
           {isStarted &&
             activeQuestions.map((question) => (
               <Meteor key={question.id} question={question} />
@@ -277,7 +241,7 @@ function Game() {
             }
           }}
         />
-      </GameWrapper>
+      </StarryBackground>
     </GameContext.Provider>
   );
 }
