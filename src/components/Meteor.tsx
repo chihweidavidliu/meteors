@@ -79,19 +79,19 @@ const Meteor = ({ question }: IMeteorProps) => {
 
     const calculateInterval = () => {
       if (score < 10) {
-        return getRandomInt(20, 10);
+        return getRandomInt(30, 20);
       }
 
       if (score < 20) {
-        return getRandomInt(15, 8);
+        return getRandomInt(20, 15);
       }
 
       if (score < 30) {
-        return getRandomInt(10, 5);
+        return getRandomInt(15, 10);
       }
 
       if (score < 40) {
-        return getRandomInt(7, 5);
+        return getRandomInt(10, 5);
       }
 
       return 5;
@@ -117,6 +117,9 @@ const Meteor = ({ question }: IMeteorProps) => {
 
   return (
     <MeteorWrapper
+      id={question.question}
+      data-position-x={position.positionX}
+      data-position-y={position.positionY}
       meteorSize={meteorSize}
       left={position.positionX}
       bottom={position.positionY}
@@ -127,7 +130,10 @@ const Meteor = ({ question }: IMeteorProps) => {
         width={meteorSize}
         rotation={rotation}
       />
-      <Question>{question.question}</Question>
+      <Question>
+        {question.question}
+        <div>{`x: ${position.positionX}, y: ${position.positionY}`}</div>
+      </Question>
     </MeteorWrapper>
   );
 };

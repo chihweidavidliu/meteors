@@ -8,6 +8,8 @@ import { useQuestionHandler } from "./hooks/useQuestionHandler";
 import { setAudioVolume } from "./util/setAudioVolume";
 import { Button } from "./components/Button";
 import Cannon from "./components/Cannon";
+import { IQuestion } from "./types/Question";
+import { radiansToDegrees } from "./util/radiansToDegrees";
 const levelUpSound = require("./assets/levelUp.mp3");
 const laserSound = require("./assets/laser.mp3");
 const errorSound = require("./assets/error.mp3");
@@ -87,6 +89,16 @@ const PlayArea = styled.div<{ screenWidth: number; screenHeight: number }>`
   border: 3px solid lightgrey;
 `;
 
+const Guide = styled.div<{ left: number; bottom: number }>`
+  position: absolute;
+  left: ${(props) => `${props.left}px`};
+  bottom: ${(props) => `${props.bottom}px`};
+  width: 1px;
+  height: 1px;
+  background: red;
+  z-index: 100;
+`;
+
 const StyledInput = styled.input`
   color: ${(props) => props.theme.primaryColour};
   font-size: 18px;
@@ -131,6 +143,8 @@ function App() {
   const [errorAudioRef] = useState(createRef<HTMLAudioElement>());
   const [laserAudioRef] = useState(createRef<HTMLAudioElement>());
   const [isStarted, setIsStarted] = useState(false);
+  const [cannonRotation, setCannonRotation] = useState(0);
+  const [isCannonFiring, setIsCannonFiring] = useState(false);
   const {
     questions,
     setQuestions,
@@ -151,39 +165,92 @@ function App() {
     }
   }, [inputRef, isStarted]);
 
+  const fireCannon = (angle: number) => {
+    setIsCannonFiring(true);
+    setCannonRotation(angle);
+    setIsCannonFiring(false);
+  };
+
+  const cannonPosition = { positionY: 50, positionX: screenWidth / 2 };
+
+  const destroyMeteor = (answeredQuestion: IQuestion) => {
+    const meteorElement = document.querySelector(
+      `#${answeredQuestion.question}`
+    ) as HTMLElement;
+
+    if (
+      !meteorElement ||
+      !meteorElement.dataset.positionX ||
+      !meteorElement.dataset.positionY
+    ) {
+      return;
+    }
+
+    // calculate rotation of cannon and fire cannon
+
+    // TODO: fix this
+    console.log("cannonPositionX", cannonPosition.positionX);
+    const meteorPositionX = parseInt(meteorElement.dataset.positionX);
+    const meteorPositionY = parseInt(meteorElement.dataset.positionY);
+    console.log("meteorPositionX", meteorPositionX);
+    console.log("meteorPositionY", meteorPositionY);
+
+    if (cannonPosition.positionX === meteorPositionX) {
+      fireCannon(0);
+    } else {
+      const oppositeLength = meteorPositionX - cannonPosition.positionX;
+
+      const adjacentLength = parseInt(meteorElement.dataset.positionY) - 50;
+      console.log("opposite length", oppositeLength);
+      console.log("adjacent length", adjacentLength);
+      const theta = radiansToDegrees(
+        Math.atan(oppositeLength / adjacentLength)
+      );
+
+      console.log("theta", theta);
+      fireCannon(theta);
+    }
+
+    // wait for laser animation
+
+    // call destroyMeteor
+
+    setAudioVolume(laserAudioRef, 0.4);
+    laserAudioRef?.current?.play();
+
+    const { stats } = answeredQuestion;
+
+    const updatedActiveQuestions = activeQuestions.filter(
+      (question) => question.id !== answeredQuestion.id
+    );
+    setActiveQuestions(updatedActiveQuestions);
+    setQuestions([
+      ...questions,
+      {
+        ...answeredQuestion,
+        stats: {
+          correctlyAnswered: stats.correctlyAnswered++,
+          appearances: stats.appearances,
+        },
+      },
+    ]);
+
+    const newScore = score + 1;
+    if (newScore % 10 === 0) {
+      setAudioVolume(levelUpAudioRef, 0.4);
+      levelUpAudioRef?.current?.play();
+    }
+
+    setScore(newScore);
+  };
+
   const checkAnswer = (inputValue: string) => {
     const answeredQuestion = activeQuestions.find((question) =>
       question.answers.includes(inputValue.trim())
     );
 
     if (answeredQuestion) {
-      setAudioVolume(laserAudioRef, 0.4);
-      laserAudioRef?.current?.play();
-
-      const { stats } = answeredQuestion;
-
-      const updatedActiveQuestions = activeQuestions.filter(
-        (question) => question.id !== answeredQuestion.id
-      );
-      setActiveQuestions(updatedActiveQuestions);
-      setQuestions([
-        ...questions,
-        {
-          ...answeredQuestion,
-          stats: {
-            correctlyAnswered: stats.correctlyAnswered++,
-            appearances: stats.appearances,
-          },
-        },
-      ]);
-
-      const newScore = score + 1;
-      if (newScore % 10 === 0) {
-        setAudioVolume(levelUpAudioRef, 0.4);
-        levelUpAudioRef?.current?.play();
-      }
-
-      setScore(newScore);
+      destroyMeteor(answeredQuestion);
     } else {
       setAudioVolume(errorAudioRef, 0.4);
       errorAudioRef?.current?.play();
@@ -205,6 +272,11 @@ function App() {
         score,
         meteorSize,
         lastDestroyed,
+        cannonRotation,
+        setCannonRotation: (rotation: number) => setCannonRotation(rotation),
+        destroyMeteor,
+        isCannonFiring,
+        fireCannon,
       }}
     >
       <ThemeProvider theme={theme}>
@@ -236,6 +308,10 @@ function App() {
               ))}
 
             <Cannon />
+            <Guide
+              left={cannonPosition.positionX}
+              bottom={cannonPosition.positionY}
+            />
           </PlayArea>
 
           {score}

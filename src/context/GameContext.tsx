@@ -13,6 +13,10 @@ interface IGameContextProps {
   score: number;
   lastDestroyed: IQuestion | null;
   cannonRotation: number;
+  setCannonRotation: (angle: number) => void;
+  isCannonFiring: boolean;
+  fireCannon: (angle: number) => void;
+  destroyMeteor: (destroyed: IQuestion) => void;
 }
 
 const initialprops: IGameContextProps = {
@@ -27,6 +31,10 @@ const initialprops: IGameContextProps = {
   score: 0,
   lastDestroyed: null,
   cannonRotation: 0,
+  setCannonRotation: () => {},
+  isCannonFiring: false,
+  fireCannon: () => {},
+  destroyMeteor: () => {},
 };
 
 const GameContext = createContext(initialprops);

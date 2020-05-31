@@ -36,7 +36,7 @@ export const useQuestionHandler = (
     if (isStarted) {
       const interval = setInterval(() => {
         activateQuestion();
-      }, 1500);
+      }, 2000);
 
       return () => clearInterval(interval);
     }
