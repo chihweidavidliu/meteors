@@ -153,6 +153,11 @@ function App() {
   useEffect(() => {
     if (isStarted) {
       return inputRef?.current?.focus();
+    } else {
+      setCannonRotation(() => 0);
+      setIsCannonFiring(() => false);
+      setLaserLength(() => 1000);
+      setInputValue("");
     }
   }, [inputRef, isStarted]);
 
@@ -164,30 +169,10 @@ function App() {
     setTimeout(() => {
       setIsCannonFiring(false);
       setLaserLength(1000);
-    }, 100);
+    }, 200);
   };
 
-  const destroyMeteor = (answeredQuestion: IQuestion) => {
-    const meteorElement = document.querySelector(
-      `#${answeredQuestion.question}`
-    ) as HTMLElement;
-
-    if (
-      !meteorElement ||
-      !meteorElement.dataset.positionX ||
-      !meteorElement.dataset.positionY
-    ) {
-      return;
-    }
-
-    const { theta, hypotenuse } = calculateCannonRotation(
-      meteorElement,
-      screenWidth,
-      meteorSize
-    );
-
-    fireCannon(theta, hypotenuse);
-
+  const updateQuestionsAndScores = (answeredQuestion: IQuestion) => {
     setAudioVolume(laserAudioRef, 0.4);
     laserAudioRef?.current?.play();
 
@@ -215,6 +200,30 @@ function App() {
     }
 
     setScore(newScore);
+  };
+
+  const destroyMeteor = async (answeredQuestion: IQuestion) => {
+    const meteorElement = document.querySelector(
+      `#${answeredQuestion.question}`
+    ) as HTMLElement;
+
+    if (
+      !meteorElement ||
+      !meteorElement.dataset.positionX ||
+      !meteorElement.dataset.positionY
+    ) {
+      return;
+    }
+
+    const { theta, hypotenuse } = calculateCannonRotation(
+      meteorElement,
+      screenWidth,
+      meteorSize
+    );
+
+    fireCannon(theta, hypotenuse);
+
+    setTimeout(() => updateQuestionsAndScores(answeredQuestion), 100);
   };
 
   const checkAnswer = (inputValue: string) => {
@@ -265,10 +274,12 @@ function App() {
           <OptionsWrapper>
             <Button
               onClick={() => {
-                setInputValue("");
+                // only reset this data when starting new game as we want to preserve results to display to user
                 setQuestions(initialQuestions);
                 setActiveQuestions([]);
                 setScore(0);
+
+                // start game
                 setIsStarted(!isStarted);
               }}
             >
