@@ -1,9 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import { H1 } from "../typography/H1";
+import { H2 } from "../typography/H2";
 import starsImage from "../assets/stars.png";
 import meteorImage from "../assets/asteroid.png";
 import worldImage from "../assets/world.png";
+import Card from "../components/Card";
+import { P } from "../typography/P";
 
 const Wrapper = styled.div`
   position: relative;
@@ -33,6 +36,15 @@ const Image = styled.img`
   z-index: 0;
 `;
 
+const CardWrapper = styled.div`
+  display: grid;
+  width: 100%;
+  padding: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 900px));
+  justify-content: center;
+  grid-gap: 40px;
+`;
+
 const Home = () => {
   return (
     <>
@@ -54,6 +66,17 @@ const Home = () => {
           }}
         />
         <H1 fontSize="64px">Meteors</H1>
+        <P>A game to help remember things</P>
+
+        <CardWrapper>
+          <Card fadeIn>
+            <H2>Welcome</H2>
+            <p>Meteors are hurtling towards Earth. Only you can save us...</p>
+          </Card>
+          <Card fadeIn>
+            <H2>Create Flash Cards</H2>
+          </Card>
+        </CardWrapper>
       </Wrapper>
     </>
   );
