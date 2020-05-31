@@ -56,6 +56,18 @@ const H1 = styled.h1`
   font-size: 36px;
 `;
 
+const Stars = styled.div`
+  background: black
+    url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/stars.png) repeat;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: block;
+  z-index: 0;
+`;
+
 const OptionsWrapper = styled.div`
   display: grid;
   grid-template-columns: max-content 1fr;
@@ -287,6 +299,7 @@ function App() {
             </Button>
           </OptionsWrapper>
           <PlayArea screenHeight={screenHeight} screenWidth={screenWidth}>
+            <Stars />
             {isStarted &&
               activeQuestions.map((question) => (
                 <Meteor key={question.id} question={question} />
