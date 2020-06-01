@@ -253,6 +253,7 @@ function Game() {
           <H2>{score}</H2>
 
           <Button onClick={() => setAreResultsVisible(false)}>Close</Button>
+          <Button onClick={() => history.push("/")}>Home</Button>
         </Modal>
       )}
 
