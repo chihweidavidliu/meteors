@@ -14,6 +14,8 @@ import { useHistory } from "react-router-dom";
 import { StarryBackground } from "../components/Background/StarryBackground";
 import Card from "../components/Card";
 import { H1 } from "../typography/H1";
+import worldImage from "../assets/world.svg";
+import { P } from "../typography/P";
 const levelUpSound = require("../assets/levelUp.mp3");
 const laserSound = require("../assets/laser.mp3");
 const errorSound = require("../assets/error.mp3");
@@ -21,7 +23,6 @@ const errorSound = require("../assets/error.mp3");
 const Instructions = styled(Card)`
   position: absolute;
   width: 300px;
-  height: 250px;
   left: calc(50vw - 150px);
   bottom: calc(50vh - 125px);
   background: whitesmoke;
@@ -42,11 +43,8 @@ const PlayArea = styled.div<{ screenWidth: number; screenHeight: number }>`
   width: 100%;
   max-width: ${(props) => `${props.screenWidth}px`};
   height: ${(props) => `${props.screenHeight}px`};
-
-  overflow: hidden;
   border-radius: 4px;
-
-  border: 3px solid lightgrey;
+  border-bottom: 3px solid ${(props) => props.theme.red};
 `;
 
 const StyledInput = styled.input`
@@ -54,6 +52,20 @@ const StyledInput = styled.input`
   font-size: 18px;
   padding: 10px;
   width: 300px;
+  z-index: 2;
+`;
+
+const World = styled.img`
+  position: absolute;
+  z-index: 0;
+  width: 70vw;
+  top: 100px;
+  left: -35vw;
+
+  @media (max-width: 767px) {
+    width: 100vw;
+    left: -50vw;
+  }
 `;
 
 function Game() {
@@ -79,15 +91,14 @@ function Game() {
   const [score, setScore] = useState(0);
   const [inputValue, setInputValue] = useState("");
 
-  const { screenWidth } = useResizeHandler();
-  const screenHeight = 600;
+  const { screenWidth, screenHeight } = useResizeHandler();
   const meteorSize = 100;
 
-  useEffect(() => {
-    if (initialQuestions.length === 0 || !questionContext.validateQuestions()) {
-      history.push("/");
-    }
-  }, [history, initialQuestions.length, questionContext]);
+  //   useEffect(() => {
+  //     if (initialQuestions.length === 0 || !questionContext.validateQuestions()) {
+  //       history.push("/");
+  //     }
+  //   }, [history, initialQuestions.length, questionContext]);
 
   useEffect(() => {
     if (isStarted) {
@@ -207,6 +218,7 @@ function Game() {
         <Instructions>
           <TitleWrapper>
             <H1>Defend the Earth!</H1>
+            <P>Don't let the meteors past the red line</P>
           </TitleWrapper>
 
           <Button
@@ -225,7 +237,7 @@ function Game() {
         </Instructions>
       )}
 
-      <StarryBackground>
+      <StarryBackground noPadding>
         <audio src={levelUpSound} ref={levelUpAudioRef}></audio>
         <audio src={laserSound} ref={laserAudioRef}></audio>
         <audio src={errorSound} ref={errorAudioRef}></audio>
@@ -235,7 +247,9 @@ function Game() {
             activeQuestions.map((question) => (
               <Meteor key={question.id} question={question} />
             ))}
-          <Cannon />
+          <Cannon>
+            <World src={worldImage} />
+          </Cannon>
         </PlayArea>
 
         {score}

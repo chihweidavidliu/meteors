@@ -1,7 +1,10 @@
 import styled from "styled-components";
 import starsImage from "../../assets/stars.png";
 
-export const StarryBackground = styled.div`
+interface IStarryBackgroundProps {
+  noPadding?: boolean;
+}
+export const StarryBackground = styled.div<IStarryBackgroundProps>`
   position: absolute;
   min-height: 100vh;
   width: 100vw;
@@ -10,6 +13,6 @@ export const StarryBackground = styled.div`
   grid-auto-rows: max-content;
   grid-gap: 20px;
   justify-items: center;
-  padding: 40px 0px;
+  padding: ${(props) => (props.noPadding ? "0px" : "40px 0px")};
   background: black url(${starsImage}) repeat;
 `;

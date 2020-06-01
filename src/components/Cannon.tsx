@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FunctionComponent } from "react";
 import styled from "styled-components";
 import { useGameContext } from "../context/GameContext";
 
@@ -86,7 +86,7 @@ const Laser = styled.div<{ laserLength: number }>`
   }
 `;
 
-const Cannon = () => {
+const Cannon: FunctionComponent = ({ children }) => {
   const {
     screenWidth,
     cannonRotation,
@@ -102,6 +102,7 @@ const Cannon = () => {
       </Barrel>
       <CannonWrapper screenWidth={screenWidth}>
         <CannonHiglight />
+        {children}
       </CannonWrapper>
     </>
   );

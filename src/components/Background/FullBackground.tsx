@@ -1,18 +1,13 @@
 import React, { FunctionComponent } from "react";
-import styled from "styled-components";
+import { ImageElement } from "./ImageElement";
 import meteorImage from "../../assets/asteroid.png";
 import worldImage from "../../assets/world.png";
 import { StarryBackground } from "./StarryBackground";
 
-const Image = styled.img`
-  position: absolute;
-  z-index: 0;
-`;
-
 const FullBackground: FunctionComponent = ({ children }) => {
   return (
     <StarryBackground>
-      <Image
+      <ImageElement
         src={meteorImage}
         style={{
           bottom: "50vh",
@@ -20,7 +15,7 @@ const FullBackground: FunctionComponent = ({ children }) => {
         }}
       />
 
-      <Image
+      <ImageElement
         src={worldImage}
         style={{
           bottom: "-100px",
