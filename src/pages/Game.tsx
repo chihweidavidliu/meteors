@@ -29,7 +29,6 @@ const Instructions = styled(Card)`
   display: grid;
   grid-gap: 30px;
   grid-template-rows: max-content 1fr;
-
   justify-content: center;
   z-index: 3;
 `;
@@ -53,6 +52,10 @@ const StyledInput = styled.input`
   padding: 10px;
   width: 300px;
   z-index: 2;
+  margin-top: 40px;
+  &:focus {
+    outline: 1px solid ${(props) => props.theme.primaryColour};
+  }
 `;
 
 const World = styled.img`

@@ -8,7 +8,7 @@ export const useResizeHandler = () => {
     : window.innerWidth * 0.6;
 
   const [screenWidth, setScreenWidth] = useState(initialScreenWidth);
-  const [screenHeight] = useState(600);
+  const [screenHeight] = useState(700);
 
   useLayoutEffect(() => {
     const handleResize = () => {
