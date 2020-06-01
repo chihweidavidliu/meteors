@@ -199,6 +199,17 @@ function Game() {
     setInputValue("");
   };
 
+  const handleStartClick = () => {
+    // only reset this data when starting new game as we want to preserve results to display to user
+    setQuestions(initialQuestions);
+    setActiveQuestions([]);
+    setScore(0);
+    setAreResultsVisible(false);
+
+    // start game
+    setIsStarted(!isStarted);
+  };
+
   return (
     <GameContext.Provider
       value={{
@@ -230,18 +241,7 @@ function Game() {
             <P>Don't let the meteors past the red line</P>
           </TitleWrapper>
 
-          <Button
-            onClick={() => {
-              // only reset this data when starting new game as we want to preserve results to display to user
-              setQuestions(initialQuestions);
-              setActiveQuestions([]);
-              setScore(0);
-              setAreResultsVisible(false);
-
-              // start game
-              setIsStarted(!isStarted);
-            }}
-          >
+          <Button onClick={handleStartClick}>
             {isStarted ? "End" : "Start"}
           </Button>
         </Modal>
@@ -252,7 +252,7 @@ function Game() {
           <H1>Your Score</H1>
           <H2>{score}</H2>
 
-          <Button onClick={() => setAreResultsVisible(false)}>Close</Button>
+          <Button onClick={handleStartClick}>Restart</Button>
           <Button onClick={() => history.push("/")}>Home</Button>
         </Modal>
       )}
