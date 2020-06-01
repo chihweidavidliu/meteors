@@ -18,6 +18,8 @@ interface IGameContextProps {
   laserLength: number;
   fireCannon: (angle: number, laserLength: number) => void;
   destroyMeteor: (destroyed: IQuestion) => void;
+  areResultsVisible: boolean;
+  setAreResultsVisible: (areVisible: boolean) => void;
 }
 
 const initialprops: IGameContextProps = {
@@ -37,6 +39,8 @@ const initialprops: IGameContextProps = {
   laserLength: 0,
   fireCannon: () => {},
   destroyMeteor: () => {},
+  areResultsVisible: false,
+  setAreResultsVisible: () => {},
 };
 
 const GameContext = createContext(initialprops);

@@ -16,11 +16,12 @@ import Card from "../components/Card";
 import { H1 } from "../typography/H1";
 import worldImage from "../assets/world.svg";
 import { P } from "../typography/P";
+import { H2 } from "../typography/H2";
 const levelUpSound = require("../assets/levelUp.mp3");
 const laserSound = require("../assets/laser.mp3");
 const errorSound = require("../assets/error.mp3");
 
-const Instructions = styled(Card)`
+const Modal = styled(Card)`
   position: fixed;
   width: 300px;
   left: calc(50vw - 150px);
@@ -30,6 +31,7 @@ const Instructions = styled(Card)`
   grid-gap: 30px;
   grid-template-rows: max-content 1fr;
   justify-content: center;
+  text-align: center;
   z-index: 3;
 `;
 
@@ -84,6 +86,7 @@ function Game() {
   const [cannonRotation, setCannonRotation] = useState(0);
   const [isCannonFiring, setIsCannonFiring] = useState(false);
   const [laserLength, setLaserLength] = useState(1000);
+  const [areResultsVisible, setAreResultsVisible] = useState(false);
   const {
     questions,
     setQuestions,
@@ -215,10 +218,13 @@ function Game() {
         isCannonFiring,
         fireCannon,
         laserLength,
+        areResultsVisible,
+        setAreResultsVisible: (areVisible: boolean) =>
+          setAreResultsVisible(areVisible),
       }}
     >
-      {!isStarted && (
-        <Instructions>
+      {!isStarted && !areResultsVisible && (
+        <Modal>
           <TitleWrapper>
             <H1>Defend the Earth!</H1>
             <P>Don't let the meteors past the red line</P>
@@ -230,6 +236,7 @@ function Game() {
               setQuestions(initialQuestions);
               setActiveQuestions([]);
               setScore(0);
+              setAreResultsVisible(false);
 
               // start game
               setIsStarted(!isStarted);
@@ -237,7 +244,16 @@ function Game() {
           >
             {isStarted ? "End" : "Start"}
           </Button>
-        </Instructions>
+        </Modal>
+      )}
+
+      {areResultsVisible && (
+        <Modal>
+          <H1>Your Score</H1>
+          <H2>{score}</H2>
+
+          <Button onClick={() => setAreResultsVisible(false)}>Close</Button>
+        </Modal>
       )}
 
       <StarryBackground noPadding>
