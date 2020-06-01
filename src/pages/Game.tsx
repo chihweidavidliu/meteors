@@ -21,7 +21,7 @@ const laserSound = require("../assets/laser.mp3");
 const errorSound = require("../assets/error.mp3");
 
 const Instructions = styled(Card)`
-  position: absolute;
+  position: fixed;
   width: 300px;
   left: calc(50vw - 150px);
   bottom: calc(50vh - 125px);
@@ -97,11 +97,11 @@ function Game() {
   const { screenWidth, screenHeight } = useResizeHandler();
   const meteorSize = 100;
 
-  //   useEffect(() => {
-  //     if (initialQuestions.length === 0 || !questionContext.validateQuestions()) {
-  //       history.push("/");
-  //     }
-  //   }, [history, initialQuestions.length, questionContext]);
+  useEffect(() => {
+    if (initialQuestions.length === 0 || !questionContext.validateQuestions()) {
+      history.push("/");
+    }
+  }, [history, initialQuestions.length, questionContext]);
 
   useEffect(() => {
     if (isStarted) {
