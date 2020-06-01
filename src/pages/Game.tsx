@@ -274,7 +274,7 @@ function Game() {
         {score}
         <StyledInput
           ref={inputRef}
-          placeholder="Type translations here"
+          placeholder="Type answers here"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={(e) => {
