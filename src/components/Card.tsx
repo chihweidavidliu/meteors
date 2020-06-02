@@ -5,6 +5,7 @@ interface ICardProps {
   background?: string;
   boxShadowColour?: string;
   isWrapped?: boolean;
+  span?: string;
 }
 
 const Card = styled.div<ICardProps>`
@@ -18,6 +19,14 @@ const Card = styled.div<ICardProps>`
   ${(props) => props.isWrapped && " height: max-content;"}
   ${(props) => props.boxShadowColour || props.theme.primaryColour};
   ${(props) => props.fadeIn && "animation: fadeIn 2s;"}
+  ${(props) =>
+    props.span &&
+    `grid-column: span ${props.span};`}
+
+
+    @media(max-width: 767px) {
+    ${(props) => props.span && `grid-column: span 1;`}
+  }
 
   @keyframes fadeIn {
     from {

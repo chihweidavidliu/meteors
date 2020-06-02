@@ -32,6 +32,7 @@ const theme = {
 };
 
 function App() {
+  const [listName, setListName] = useState("");
   const [questions, setQuestions] = useState([
     createBlankQuestion(),
     createBlankQuestion(),
@@ -57,6 +58,8 @@ function App() {
           questions,
           setQuestions,
           validateQuestions,
+          listName,
+          setListName,
         }}
       >
         <Router>

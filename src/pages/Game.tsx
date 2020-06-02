@@ -253,7 +253,15 @@ function Game() {
           <H2>{score}</H2>
 
           <Button onClick={handleStartClick}>Restart</Button>
-          <Button onClick={() => history.push("/")}>Home</Button>
+          <Button
+            onClick={() => {
+              questionContext.setQuestions([]);
+              questionContext.setListName("");
+              history.push("/");
+            }}
+          >
+            Home
+          </Button>
         </Modal>
       )}
 

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { IQuestion } from "../../types/Question";
 import Input from "../Input";
 import { useThemeContext } from "../../hooks/useThemeContext";
+import { Label } from "../Label";
 
 const QuestionInputWrapper = styled.div`
   display: grid;
@@ -23,10 +24,6 @@ const QuestionInputWrapper = styled.div`
   @media (max-width: 767px) {
     grid-template-columns: 1fr;
   }
-`;
-
-const Label = styled.label`
-  display: grid;
 `;
 
 interface IButtonTheme {

@@ -1,23 +1,29 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { IQuestion } from "../../types/Question";
 import shortid from "shortid";
 import QuestionInput from "./QuestionInput";
 import { Button } from "../Button";
 import { useQuestionContext } from "../../context/QuestionContext";
+import Input from "../Input";
+import { Label } from "../Label";
 
 const QuestionCreatorWrapper = styled.div``;
+
+const ListNameWrapper = styled.div`
+  padding: 20px 0px;
+`;
 
 const InnerWrapper = styled.div`
   display: grid;
   grid-gap: 15px;
-  padding: 20px 0px;
 `;
 
 const ButtonWrapper = styled.div`
   display: flex;
   width: 100%;
   justify-content: center;
+  margin-top: 20px;
 `;
 
 const createBlankQuestion = () => ({
@@ -28,7 +34,19 @@ const createBlankQuestion = () => ({
 });
 
 const QuestionCreator = () => {
-  const { questions, setQuestions } = useQuestionContext();
+  const {
+    questions,
+    setQuestions,
+    setListName,
+    listName,
+  } = useQuestionContext();
+
+  const [listNameValue, setListNameValue] = useState(listName);
+  const [listNameError, setListNameError] = useState("");
+
+  useEffect(() => {
+    setListNameValue(listName);
+  }, [listName]);
 
   const handleQuestionUpdate = (updatedQuestion: IQuestion) => {
     setQuestions((prevQuestions) =>
@@ -53,6 +71,26 @@ const QuestionCreator = () => {
 
   return (
     <QuestionCreatorWrapper>
+      <ListNameWrapper>
+        <Label>
+          List name
+          <Input
+            placeholder="E.g. French Greetings"
+            blurOnEnter
+            handleChange={(e) => setListNameValue(e.target.value)}
+            value={listNameValue}
+            handleBlur={() => {
+              if (!listNameValue) {
+                return setListNameError("List name is required");
+              }
+              setListNameError("");
+              setListName(listNameValue);
+            }}
+            error={listNameError}
+          />
+        </Label>
+      </ListNameWrapper>
+
       <InnerWrapper>
         {questions.map((question) => (
           <QuestionInput
