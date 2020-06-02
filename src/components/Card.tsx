@@ -24,8 +24,9 @@ const Card = styled.div<ICardProps>`
     `grid-column: span ${props.span};`}
 
 
-    @media(max-width: 767px) {
+  @media(max-width: 767px) {
     ${(props) => props.span && `grid-column: span 1;`}
+    padding: 25px;
   }
 
   @keyframes fadeIn {

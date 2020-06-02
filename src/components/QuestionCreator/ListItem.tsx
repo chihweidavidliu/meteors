@@ -19,9 +19,28 @@ const Wrapper = styled.div`
 
 const TopBar = styled.div`
   display: grid;
-  grid-template-columns: 1fr max-content max-content max-content max-content;
-  grid-gap: 20px;
+  grid-template-columns: 1fr max-content;
+  grid-gap: 10px;
   align-items: center;
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  @media (max-width: 767px) {
+    text-align: center;
+  }
+`;
+
+const ButtonGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, max-content);
+  grid-gap: 10px;
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (max-width: 767px) {
+    text-align: center;
+  }
 `;
 
 const QuestionList = styled.div`
@@ -67,7 +86,7 @@ interface IListItemProps {
 
 const ListItem = ({ list, setLists }: IListItemProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { red, primaryColour } = useThemeContext();
+  const { primaryColour } = useThemeContext();
   const { setListName, setQuestions } = useQuestionContext();
   const history = useHistory();
 
@@ -82,40 +101,42 @@ const ListItem = ({ list, setLists }: IListItemProps) => {
     <Wrapper>
       <TopBar>
         <strong style={{ fontSize: "18px" }}>{list.name}</strong>
-        <Button
-          onClick={() => {
-            setListName(list.name);
-            setQuestions(list.questions);
-            history.push("/play");
-          }}
-        >
-          Play
-        </Button>
-        <Button
-          onClick={() => setIsExpanded(!isExpanded)}
-          buttonTheme={{
-            primaryColour,
-            hoverColour: "#2e3d49",
-          }}
-        >
-          {isExpanded ? "Hide Terms" : "Show Terms"}
-        </Button>
+        <ButtonGrid>
+          <Button
+            onClick={() => {
+              setListName(list.name);
+              setQuestions(list.questions);
+              history.push("/play");
+            }}
+          >
+            Play
+          </Button>
+          <Button
+            onClick={() => setIsExpanded(!isExpanded)}
+            buttonTheme={{
+              primaryColour,
+              hoverColour: "#2e3d49",
+            }}
+          >
+            {isExpanded ? "Hide Terms" : "Show Terms"}
+          </Button>
 
-        <Button
-          onClick={() => {
-            setQuestions(list.questions);
-            setListName(list.name);
-          }}
-          buttonTheme={{
-            primaryColour: "#ffd800",
-            hoverColour: "#d8bd20",
-          }}
-        >
-          Edit
-        </Button>
-        <Button onClick={handleDelete} isDeleteButton>
-          Delete
-        </Button>
+          <Button
+            onClick={() => {
+              setQuestions(list.questions);
+              setListName(list.name);
+            }}
+            buttonTheme={{
+              primaryColour: "#ffd800",
+              hoverColour: "#d8bd20",
+            }}
+          >
+            Edit
+          </Button>
+          <Button onClick={handleDelete} isDeleteButton>
+            Delete
+          </Button>
+        </ButtonGrid>
       </TopBar>
       {isExpanded && (
         <QuestionList>

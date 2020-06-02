@@ -17,7 +17,7 @@ const QuestionCreatorWrapper = styled.div``;
 const ToolbarWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(50px, 200px));
-  grid-gap: 15px;
+  grid-gap: 10px;
 `;
 
 const ListNameWrapper = styled.div`

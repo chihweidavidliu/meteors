@@ -9,7 +9,7 @@ const QuestionInputWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr max-content;
   grid-auto-rows: max-content;
-  grid-gap: 30px;
+  grid-gap: 15px;
   align-items: center;
 
   background: white;
@@ -25,16 +25,6 @@ const QuestionInputWrapper = styled.div`
     grid-template-columns: 1fr;
   }
 `;
-
-interface IButtonTheme {
-  primaryColour?: string;
-  hoverColour?: string;
-  fontColour?: string;
-}
-
-interface IButtonProps {
-  buttonTheme?: IButtonTheme;
-}
 
 interface IQuestionInputProps {
   question: IQuestion;

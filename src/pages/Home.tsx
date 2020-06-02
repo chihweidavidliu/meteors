@@ -16,8 +16,12 @@ const CardWrapper = styled.div`
   grid-auto-rows: max-content;
   justify-content: center;
   grid-gap: 40px;
+  @media (max-width: 1024px) {
+    grid-gap: 20px;
+  }
   @media (max-width: 767px) {
     grid-template-columns: 1fr;
+    padding: 10px;
   }
 `;
 
