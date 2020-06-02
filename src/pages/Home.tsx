@@ -5,15 +5,8 @@ import { H2 } from "../typography/H2";
 import Card from "../components/Card";
 import { P } from "../typography/P";
 import QuestionCreator from "../components/QuestionCreator/QuestionCreator";
-import { Button } from "../components/Button";
-import { useQuestionContext } from "../context/QuestionContext";
-import { useHistory } from "react-router-dom";
 import FullBackground from "../components/Background/FullBackground";
-import { IList } from "../types/List";
 import SavedLists from "../components/QuestionCreator/SavedLists";
-import { getSavedLists } from "../util/getSavedLists";
-import { updateSavedLists } from "../util/updateSavedLists";
-import shortid from "shortid";
 
 const CardWrapper = styled.div`
   display: grid;
@@ -36,22 +29,6 @@ const TitleWrapper = styled.div`
 `;
 
 const Home = () => {
-  const { validateQuestions, listName, questions } = useQuestionContext();
-  const history = useHistory();
-
-  const areQuestionsValid = validateQuestions();
-
-  const handleStartClick = () => {
-    const existingLists = getSavedLists();
-
-    const updatedLists: IList[] = [
-      ...existingLists,
-      { id: shortid.generate(), name: listName, questions },
-    ];
-    updateSavedLists(updatedLists);
-    history.push("/play");
-  };
-
   return (
     <FullBackground>
       <H1 fontSize="64px">Meteors</H1>
@@ -72,13 +49,7 @@ const Home = () => {
         <Card fadeIn isWrapped>
           <TitleWrapper>
             <H2>Create Questions</H2>
-            {areQuestionsValid && listName && (
-              <Button type="button" onClick={handleStartClick}>
-                Start Learning!
-              </Button>
-            )}
           </TitleWrapper>
-
           <QuestionCreator />
         </Card>
 

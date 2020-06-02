@@ -113,13 +113,7 @@ const ListItem = ({ list, setLists }: IListItemProps) => {
         >
           Edit
         </Button>
-        <Button
-          onClick={handleDelete}
-          buttonTheme={{
-            primaryColour: red,
-            hoverColour: "darkred",
-          }}
-        >
+        <Button onClick={handleDelete} isDeleteButton>
           Delete
         </Button>
       </TopBar>

@@ -7,16 +7,22 @@ interface IButtonTheme {
 }
 
 interface IButtonProps {
+  isDeleteButton?: boolean;
   buttonTheme?: IButtonTheme;
   disabled?: boolean;
 }
 
 export const Button = styled.button<IButtonProps>`
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
   padding: 10px;
-  background: ${(props) =>
-    props?.buttonTheme?.primaryColour || props.theme.green};
+  background: ${(props) => {
+    if (props.isDeleteButton) {
+      return props.theme.red;
+    }
+
+    return props?.buttonTheme?.primaryColour || props.theme.green;
+  }};
   color: ${(props) => props?.buttonTheme?.fontColour || `white`};
   border: none;
   border-radius: 4px;
@@ -26,7 +32,13 @@ export const Button = styled.button<IButtonProps>`
 
   &:hover,
   &:focus {
-    background: ${(props) => props?.buttonTheme?.hoverColour || `#17750a`};
+    background: ${(props) => {
+      if (props.isDeleteButton) {
+        return "darkred";
+      }
+
+      return props?.buttonTheme?.hoverColour || `#17750a`;
+    }};
   }
 
   &:focus {

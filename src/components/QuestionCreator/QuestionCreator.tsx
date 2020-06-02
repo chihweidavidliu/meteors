@@ -7,8 +7,18 @@ import { Button } from "../Button";
 import { useQuestionContext } from "../../context/QuestionContext";
 import Input from "../Input";
 import { Label } from "../Label";
+import { getSavedLists } from "../../util/getSavedLists";
+import { useHistory } from "react-router-dom";
+import { updateSavedLists } from "../../util/updateSavedLists";
+import { IList } from "../../types/List";
 
 const QuestionCreatorWrapper = styled.div``;
+
+const ToolbarWrapper = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(50px, 200px));
+  grid-gap: 15px;
+`;
 
 const ListNameWrapper = styled.div`
   padding: 20px 0px;
@@ -26,6 +36,21 @@ const ButtonWrapper = styled.div`
   margin-top: 20px;
 `;
 
+const StartButton = styled(Button)`
+  animation: emphasize 0.8s;
+  @keyframes emphasize {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+`;
+
 const createBlankQuestion = () => ({
   id: shortid.generate(),
   term: "",
@@ -39,10 +64,36 @@ const QuestionCreator = () => {
     setQuestions,
     setListName,
     listName,
+    validateQuestions,
   } = useQuestionContext();
 
+  const history = useHistory();
   const [listNameValue, setListNameValue] = useState(listName);
   const [listNameError, setListNameError] = useState("");
+
+  const areQuestionsValid = validateQuestions();
+
+  const handleStartClick = () => {
+    const existingLists = getSavedLists();
+
+    const hasListPreviouslyBeenSaved = existingLists.find(
+      (list) => list.name === listName
+    );
+
+    const updatedLists: IList[] = hasListPreviouslyBeenSaved
+      ? existingLists.map((savedList) => {
+          if (savedList.name === listName) {
+            return { ...savedList, questions };
+          }
+          return savedList;
+        })
+      : [
+          ...existingLists,
+          { id: shortid.generate(), name: listName, questions },
+        ];
+    updateSavedLists(updatedLists);
+    history.push("/play");
+  };
 
   useEffect(() => {
     setListNameValue(listName);
@@ -64,13 +115,37 @@ const QuestionCreator = () => {
   };
 
   const deleteQuestion = (questionId: string) => {
-    setQuestions((prevQuestions) =>
-      prevQuestions.filter((question) => question.id !== questionId)
-    );
+    setQuestions((prevQuestions) => {
+      if (prevQuestions.length === 1) {
+        return [createBlankQuestion()];
+      }
+
+      return prevQuestions.filter((question) => question.id !== questionId);
+    });
   };
 
   return (
     <QuestionCreatorWrapper>
+      <ToolbarWrapper>
+        <Button
+          isDeleteButton
+          onClick={() => {
+            setListName("");
+            setQuestions([
+              createBlankQuestion(),
+              createBlankQuestion(),
+              createBlankQuestion(),
+            ]);
+          }}
+        >
+          Reset
+        </Button>
+        {areQuestionsValid && listName && (
+          <StartButton type="button" onClick={handleStartClick}>
+            Start Learning!
+          </StartButton>
+        )}
+      </ToolbarWrapper>
       <ListNameWrapper>
         <Label>
           List name

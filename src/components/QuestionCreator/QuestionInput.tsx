@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { IQuestion } from "../../types/Question";
 import Input from "../Input";
-import { useThemeContext } from "../../hooks/useThemeContext";
 import { Label } from "../Label";
+import { Button } from "../Button";
 
 const QuestionInputWrapper = styled.div`
   display: grid;
@@ -36,30 +36,6 @@ interface IButtonProps {
   buttonTheme?: IButtonTheme;
 }
 
-const Button = styled.button<IButtonProps>`
-  font-size: 18px;
-  padding: 10px;
-  background: ${(props) =>
-    props?.buttonTheme?.primaryColour || props.theme.green};
-  color: ${(props) => props?.buttonTheme?.fontColour || `white`};
-  border: none;
-  border-radius: 4px;
-  height: max-content;
-  cursor: pointer;
-  border: 2px solid transparent;
-
-  &:hover,
-  &:focus {
-    background: ${(props) => props?.buttonTheme?.hoverColour || `#17750a`};
-  }
-
-  &:focus {
-    outline: none;
-    border: 2px solid
-      ${(props) => props?.buttonTheme?.primaryColour || props.theme.green};
-  }
-`;
-
 interface IQuestionInputProps {
   question: IQuestion;
   handleQuestionUpdate: (updatedQuestion: IQuestion) => void;
@@ -71,9 +47,6 @@ const QuestionInput = ({
   handleQuestionUpdate,
   handleQuestionDelete,
 }: IQuestionInputProps) => {
-  const themeContext = useThemeContext();
-  const { red } = themeContext;
-
   const [term, setTerm] = useState(question.term);
   const [termError, setTermError] = useState("");
   const [definition, setDefinition] = useState(question.definition);
@@ -127,13 +100,7 @@ const QuestionInput = ({
         />
       </Label>
 
-      <Button
-        onClick={() => handleQuestionDelete(question.id)}
-        buttonTheme={{
-          primaryColour: red,
-          hoverColour: "darkred",
-        }}
-      >
+      <Button isDeleteButton onClick={() => handleQuestionDelete(question.id)}>
         Delete
       </Button>
     </QuestionInputWrapper>
