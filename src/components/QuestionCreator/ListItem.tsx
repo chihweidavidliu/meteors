@@ -62,9 +62,10 @@ const QuestionDetail = ({ question }: IQuestionDetailProps) => {
 
 interface IListItemProps {
   list: IList;
+  setLists: (lists: IList[]) => void;
 }
 
-const ListItem = ({ list }: IListItemProps) => {
+const ListItem = ({ list, setLists }: IListItemProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { red, primaryColour } = useThemeContext();
   const { setListName, setQuestions } = useQuestionContext();
@@ -72,9 +73,9 @@ const ListItem = ({ list }: IListItemProps) => {
 
   const handleDelete = () => {
     const savedLists = getSavedLists();
-    updateSavedLists(
-      savedLists.filter((savedList) => savedList.id !== list.id)
-    );
+    const updated = savedLists.filter((savedList) => savedList.id !== list.id);
+    updateSavedLists(updated);
+    setLists(updated);
   };
 
   return (
