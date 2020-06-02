@@ -24,10 +24,16 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "check-types": "tsc -p tsconfig.json --noEmit"
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run check-types"
+    }
   },
   "browserslist": {
     "production": [
@@ -44,6 +50,7 @@
   "devDependencies": {
     "@types/react-router-dom": "^5.1.5",
     "@types/shortid": "0.0.29",
-    "@types/styled-components": "^5.1.0"
+    "@types/styled-components": "^5.1.0",
+    "husky": "^4.2.5"
   }
 }
