@@ -55,13 +55,12 @@ const StyledInput = styled.input`
   padding: 10px;
   width: 300px;
   z-index: 2;
-  margin-top: 40px;
   &:focus {
     outline: 1px solid ${(props) => props.theme.primaryColour};
   }
 
   @media (max-width: 376px) {
-    margin-top: 0px;
+    margin-bottom: 20px;
   }
 `;
 
