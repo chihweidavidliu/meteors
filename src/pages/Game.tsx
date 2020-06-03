@@ -225,7 +225,7 @@ function Game() {
     return updatedList;
   };
 
-  const handleStartClick = () => {
+  const handleStartClick = (isRestart?: boolean) => {
     // save results to local storage
     const listWithUpdatedScores = saveResultsToLists();
     // only reset this data when starting new game as we want to preserve results to display to user
@@ -234,6 +234,9 @@ function Game() {
     setScore(0);
     setAreResultsVisible(false);
 
+    if (isRestart) {
+      return;
+    }
     // start game
     inputRef?.current?.focus();
     setIsStarted(!isStarted);
@@ -297,7 +300,7 @@ function Game() {
             </Label>
           </TitleWrapper>
 
-          <Button onClick={handleStartClick}>
+          <Button onClick={() => handleStartClick()}>
             {isStarted ? "End" : "Start"}
           </Button>
         </Modal>
@@ -308,7 +311,7 @@ function Game() {
           <H1>Your Score</H1>
           <H2>{score}</H2>
 
-          <Button onClick={handleStartClick}>Restart</Button>
+          <Button onClick={() => handleStartClick(true)}>Restart</Button>
           <Button onClick={handleHomeClick}>Home</Button>
         </Modal>
       )}
