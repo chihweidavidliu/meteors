@@ -3,7 +3,7 @@ import { useMediaQuery } from "react-responsive";
 
 export const useResizeHandler = () => {
   const isHighResolution = useMediaQuery({
-    query: "(min-width: 1441px)",
+    query: "(min-width: 2000px)",
   });
 
   const isTabletOrSmallDesktop = useMediaQuery({
@@ -19,13 +19,14 @@ export const useResizeHandler = () => {
     : window.innerWidth * 0.6;
 
   const [screenWidth, setScreenWidth] = useState(initialScreenWidth);
-  const [screenHeight] = useState(
-    isHighResolution
-      ? window.innerHeight * 0.9
-      : isMobileOrTablet
-      ? window.innerHeight * 0.8
-      : 700
-  );
+
+  const initialScreenHeight = isHighResolution
+    ? window.innerHeight * 0.85
+    : isMobileOrTablet
+    ? window.innerHeight * 0.8
+    : 700;
+
+  const [screenHeight] = useState(initialScreenHeight);
 
   useLayoutEffect(() => {
     const handleResize = () => {
