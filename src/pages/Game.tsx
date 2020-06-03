@@ -4,7 +4,6 @@ import { GameContext } from "../context/GameContext";
 import Meteor from "../components/Meteor";
 import { useResizeHandler } from "../hooks/useResizeHandler";
 import { useQuestionHandler } from "../hooks/useQuestionHandler";
-import { setAudioVolume } from "../util/setAudioVolume";
 import { Button } from "../components/Button";
 import Cannon from "../components/Cannon";
 import { IQuestion } from "../types/Question";
@@ -18,9 +17,8 @@ import worldImage from "../assets/world.svg";
 import { P } from "../typography/P";
 import { H2 } from "../typography/H2";
 import { createNewList } from "../util/createNewList";
-const levelUpSound = require("../assets/levelUp.mp3");
-const laserSound = require("../assets/laser.mp3");
-const errorSound = require("../assets/error.mp3");
+import { Label } from "../components/Label";
+import { useAudioContext, SoundEffect } from "../context/AudioContext";
 
 const Modal = styled(Card)`
   position: fixed;
@@ -95,11 +93,9 @@ function Game() {
   const { areQuestionsValid } = listContext.validateQuestions();
 
   const history = useHistory();
+  const { playAudio } = useAudioContext();
 
   const [inputRef] = useState(createRef<HTMLInputElement>());
-  const [levelUpAudioRef] = useState(createRef<HTMLAudioElement>());
-  const [errorAudioRef] = useState(createRef<HTMLAudioElement>());
-  const [laserAudioRef] = useState(createRef<HTMLAudioElement>());
   const [isStarted, setIsStarted] = useState(false);
   const [cannonRotation, setCannonRotation] = useState(0);
   const [isCannonFiring, setIsCannonFiring] = useState(false);
@@ -141,8 +137,7 @@ function Game() {
   };
 
   const updateQuestionsAndScores = (answeredQuestion: IQuestion) => {
-    setAudioVolume(laserAudioRef, 0.4);
-    laserAudioRef?.current?.play();
+    playAudio(SoundEffect.LASER);
 
     const { stats } = answeredQuestion;
 
@@ -166,8 +161,7 @@ function Game() {
 
     const newScore = score + 1;
     if (newScore % 10 === 0) {
-      setAudioVolume(levelUpAudioRef, 0.4);
-      levelUpAudioRef?.current?.play();
+      playAudio(SoundEffect.LEVEL_UP);
     }
 
     setScore(newScore);
@@ -207,8 +201,7 @@ function Game() {
     if (answeredQuestion) {
       destroyMeteor(answeredQuestion);
     } else {
-      setAudioVolume(errorAudioRef, 0.4);
-      errorAudioRef?.current?.play();
+      playAudio(SoundEffect.ERROR);
     }
 
     setInputValue("");
@@ -255,6 +248,7 @@ function Game() {
   };
 
   const endGame = () => {
+    playAudio(SoundEffect.EXPLOSION);
     setIsStarted(false);
     setCannonRotation(() => 0);
     setIsCannonFiring(() => false);
@@ -293,6 +287,14 @@ function Game() {
           <TitleWrapper>
             <H1>Defend the Earth!</H1>
             <P>Don't let the meteors past the red line</P>
+
+            <Label>
+              Options
+              <div>
+                <input type="checkbox" />
+                Swap terms and definitions
+              </div>
+            </Label>
           </TitleWrapper>
 
           <Button onClick={handleStartClick}>
@@ -312,10 +314,6 @@ function Game() {
       )}
 
       <StarryBackground noPadding>
-        <audio src={levelUpSound} ref={levelUpAudioRef}></audio>
-        <audio src={laserSound} ref={laserAudioRef}></audio>
-        <audio src={errorSound} ref={errorAudioRef}></audio>
-
         <PlayArea screenHeight={screenHeight} screenWidth={screenWidth}>
           {isStarted &&
             activeQuestions.map((question) => (

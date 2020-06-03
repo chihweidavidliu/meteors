@@ -5,6 +5,7 @@ import Game from "./pages/Game";
 import Home from "./pages/Home";
 import { ListProvider } from "./context/ListContext";
 import NotFound from "./pages/NotFound";
+import { AudioProvider } from "./context/AudioContext";
 
 const GlobalStyle = createGlobalStyle`
 html {
@@ -40,20 +41,22 @@ const theme = {
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <ListProvider>
-        <Router>
-          <GlobalStyle />
-          <Switch>
-            <Route exact path="/">
-              <Home />
-            </Route>
-            <Route exact path="/play">
-              <Game />
-            </Route>
-            <Route component={NotFound} />
-          </Switch>
-        </Router>
-      </ListProvider>
+      <AudioProvider>
+        <ListProvider>
+          <Router>
+            <GlobalStyle />
+            <Switch>
+              <Route exact path="/">
+                <Home />
+              </Route>
+              <Route exact path="/play">
+                <Game />
+              </Route>
+              <Route component={NotFound} />
+            </Switch>
+          </Router>
+        </ListProvider>
+      </AudioProvider>
     </ThemeProvider>
   );
 }
