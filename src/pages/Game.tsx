@@ -119,6 +119,7 @@ function Game() {
   const { screenWidth, screenHeight } = useResizeHandler();
   const meteorSize = 100;
 
+  // redirect home if there are no valid questions in the list
   useEffect(() => {
     if (
       initialQuestions.length === 0 ||
@@ -128,17 +129,6 @@ function Game() {
       history.push("/");
     }
   }, [areQuestionsValid, history, initialQuestions.length, listContext]);
-
-  useEffect(() => {
-    if (isStarted) {
-      return inputRef?.current?.focus();
-    } else {
-      setCannonRotation(() => 0);
-      setIsCannonFiring(() => false);
-      setLaserLength(() => 1000);
-      setInputValue("");
-    }
-  }, [inputRef, isStarted]);
 
   const fireCannon = (angle: number, hypotenuse: number) => {
     setCannonRotation(angle);
@@ -253,6 +243,7 @@ function Game() {
     setAreResultsVisible(false);
 
     // start game
+    inputRef?.current?.focus();
     setIsStarted(!isStarted);
   };
 
@@ -266,6 +257,10 @@ function Game() {
 
   const endGame = () => {
     setIsStarted(false);
+    setCannonRotation(() => 0);
+    setIsCannonFiring(() => false);
+    setLaserLength(() => 1000);
+    setInputValue("");
     setAreResultsVisible(true);
   };
 
