@@ -45,6 +45,10 @@ const StyledImage = styled.img.attrs<ImageProps>((props) => ({
 
 const Question = styled.div`
   z-index: 4;
+  background: white;
+  padding: 5px;
+  border-radius: 4px;
+  text-align: center;
 `;
 
 export interface IMeteorProps {

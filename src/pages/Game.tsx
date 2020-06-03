@@ -116,7 +116,7 @@ function Game() {
   const [inputValue, setInputValue] = useState("");
 
   const { screenWidth, screenHeight } = useResizeHandler();
-  const meteorSize = 100;
+  const meteorSize = 120;
 
   // redirect home if there are no valid questions in the list
   useEffect(() => {
