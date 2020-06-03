@@ -103,6 +103,10 @@ const OptionsWrapper = styled.div`
 const FlexBox = styled.div`
   display: flex;
   align-items: center;
+  user-select: none;
+  input {
+    margin: 0px 15px;
+  }
   @media (max-width: 376px) {
     justify-content: center;
   }
@@ -128,10 +132,12 @@ function Game() {
 
   const [inputRef] = useState(createRef<HTMLInputElement>());
   const [isStarted, setIsStarted] = useState(false);
+  const [areTermsAndDefsSwapped, setAreTermsAndDefsSwapped] = useState(false);
   const [cannonRotation, setCannonRotation] = useState(0);
   const [isCannonFiring, setIsCannonFiring] = useState(false);
   const [laserLength, setLaserLength] = useState(1000);
   const [areResultsVisible, setAreResultsVisible] = useState(false);
+
   const {
     questions,
     setQuestions,
@@ -223,11 +229,15 @@ function Game() {
   };
 
   const checkAnswer = (inputValue: string) => {
-    const answeredQuestion = activeQuestions.find(
-      (question) =>
-        question.definition.toLowerCase().trim() ===
-        inputValue.trim().toLowerCase()
-    );
+    const answeredQuestion = activeQuestions.find((question) => {
+      const rightAnswer = areTermsAndDefsSwapped
+        ? question.term
+        : question.definition;
+
+      return (
+        rightAnswer.toLowerCase().trim() === inputValue.trim().toLowerCase()
+      );
+    });
 
     if (answeredQuestion) {
       destroyMeteor(answeredQuestion);
@@ -238,9 +248,9 @@ function Game() {
     setInputValue("");
   };
 
-  const saveResultsToLists = () => {
+  const getUpdatedListPostGame = () => {
     // update questions counts in saved lists
-    const { currentList, updateLists, setCurrentList } = listContext;
+    const { currentList } = listContext;
     const updatedQuestions = [...activeQuestions, ...questions];
     const updatedList = {
       ...currentList,
@@ -251,13 +261,19 @@ function Game() {
         return updated ? updated : question;
       }),
     };
+
+    return updatedList;
+  };
+  const saveResultsToLists = () => {
+    const { updateLists, setCurrentList } = listContext;
+    const updatedList = getUpdatedListPostGame();
     updateLists(updatedList);
     setCurrentList(updatedList);
     return updatedList;
   };
 
   const handleStartClick = (isRestart?: boolean) => {
-    // save results to local storage
+    // save previous results to local storage
     const listWithUpdatedScores = saveResultsToLists();
     // only reset this data when starting new game as we want to preserve results to display to user
     setQuestions(listWithUpdatedScores.questions);
@@ -266,6 +282,7 @@ function Game() {
     setAreResultsVisible(false);
 
     if (isRestart) {
+      setAreTermsAndDefsSwapped(false);
       return;
     }
     // start game
@@ -294,6 +311,7 @@ function Game() {
   return (
     <GameContext.Provider
       value={{
+        areTermsAndDefsSwapped,
         isStarted,
         setIsStarted: (isStarted: boolean) => setIsStarted(isStarted),
         endGame,
@@ -327,15 +345,22 @@ function Game() {
             <OptionsWrapper>
               <CheckboxWrapper>
                 <FlexBox>
-                  <input type="checkbox" id="swap-checkbox" />
+                  <input
+                    type="checkbox"
+                    id="swap-checkbox"
+                    onChange={() =>
+                      setAreTermsAndDefsSwapped(!areTermsAndDefsSwapped)
+                    }
+                    checked={areTermsAndDefsSwapped}
+                  />
                   <label htmlFor="swap-checkbox">
                     <P noMargin>Swap terms and definitions</P>
                   </label>
                 </FlexBox>
 
                 <Tooltip>
-                  Check this if you want to practise remembering terms from the
-                  definitions
+                  Check this if you want to practise remembering terms from
+                  their given definition
                 </Tooltip>
               </CheckboxWrapper>
             </OptionsWrapper>

@@ -62,6 +62,7 @@ const Meteor = ({ question }: IMeteorProps) => {
     screenHeight,
     score,
     endGame,
+    areTermsAndDefsSwapped,
   } = useGameContext();
 
   const [position, setPosition] = useState<IPosition>({
@@ -135,7 +136,9 @@ const Meteor = ({ question }: IMeteorProps) => {
         width={meteorSize}
         rotation={rotation}
       />
-      <Question>{question.term}</Question>
+      <Question>
+        {areTermsAndDefsSwapped ? question.definition : question.term}
+      </Question>
     </MeteorWrapper>
   );
 };
