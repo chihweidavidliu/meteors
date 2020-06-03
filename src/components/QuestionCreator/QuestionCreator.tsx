@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
+import { useToasts } from "react-toast-notifications";
 import { IQuestion } from "../../types/Question";
 import shortid from "shortid";
 import QuestionInput from "./QuestionInput";
@@ -58,6 +59,7 @@ const createBlankQuestion = () => ({
 });
 
 const QuestionCreator = () => {
+  const { addToast } = useToasts();
   const {
     validateQuestions,
     currentList,
@@ -72,6 +74,13 @@ const QuestionCreator = () => {
   const { areQuestionsValid, hasSomeEntries } = validateQuestions();
 
   const handleStartClick = () => {
+    if (!areQuestionsValid || !currentList.name) {
+      return addToast("Please make sure you have filled all fields", {
+        appearance: "error",
+        autoDismiss: true,
+      });
+    }
+
     updateLists(currentList);
     history.push("/play");
   };
@@ -110,7 +119,7 @@ const QuestionCreator = () => {
   return (
     <QuestionCreatorWrapper>
       <ToolbarWrapper>
-        {hasSomeEntries && (
+        {(hasSomeEntries || currentList.name) && (
           <Button
             colour={Colour.YELLOW}
             onClick={() => {
@@ -121,19 +130,27 @@ const QuestionCreator = () => {
           </Button>
         )}
 
-        {areQuestionsValid && currentList.name && (
-          <>
-            <Button
-              onClick={() => updateLists(currentList)}
-              colour={Colour.PRIMARY}
-            >
-              Save
-            </Button>
-            <StartButton type="button" onClick={handleStartClick}>
-              Start Learning!
-            </StartButton>
-          </>
-        )}
+        <Button
+          onClick={() => {
+            if (!areQuestionsValid || !currentList.name) {
+              return addToast("Please make sure you have filled all fields", {
+                appearance: "error",
+                autoDismiss: true,
+              });
+            }
+            updateLists(currentList);
+            addToast("List saved successfully", {
+              appearance: "success",
+              autoDismiss: true,
+            });
+          }}
+          colour={Colour.PRIMARY}
+        >
+          Save
+        </Button>
+        <StartButton type="button" onClick={handleStartClick}>
+          Start Learning!
+        </StartButton>
       </ToolbarWrapper>
       <ListNameWrapper>
         <Label>
@@ -145,9 +162,11 @@ const QuestionCreator = () => {
             value={listNameValue}
             handleBlur={() => {
               if (!listNameValue) {
-                return setListNameError("List name is required");
+                setListNameError("List name is required");
+              } else {
+                setListNameError("");
               }
-              setListNameError("");
+
               setCurrentList({ ...currentList, name: listNameValue });
             }}
             error={listNameError}

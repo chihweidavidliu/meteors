@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useToasts } from "react-toast-notifications";
 import { IList } from "../../types/List";
 import { Button } from "../Button";
 import { IQuestion } from "../../types/Question";
@@ -99,6 +100,7 @@ interface IListItemProps {
 }
 
 const ListItem = ({ list }: IListItemProps) => {
+  const { addToast } = useToasts();
   const [isExpanded, setIsExpanded] = useState(false);
   const { setCurrentList, deleteList } = useListContext();
   const history = useHistory();
@@ -125,6 +127,10 @@ const ListItem = ({ list }: IListItemProps) => {
 
           <Button
             onClick={() => {
+              addToast("List added to editor", {
+                appearance: "success",
+                autoDismiss: true,
+              });
               setCurrentList(list);
             }}
             colour={Colour.YELLOW}

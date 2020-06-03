@@ -1,11 +1,13 @@
 import React from "react";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { Switch, BrowserRouter as Router, Route } from "react-router-dom";
+import { ToastProvider } from "react-toast-notifications";
 import Game from "./pages/Game";
 import Home from "./pages/Home";
 import { ListProvider } from "./context/ListContext";
 import NotFound from "./pages/NotFound";
 import { AudioProvider } from "./context/AudioContext";
+import Toast from "./components/Toast";
 
 const GlobalStyle = createGlobalStyle`
 html {
@@ -41,22 +43,28 @@ const theme = {
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <AudioProvider>
-        <ListProvider>
-          <Router>
-            <GlobalStyle />
-            <Switch>
-              <Route exact path="/">
-                <Home />
-              </Route>
-              <Route exact path="/play">
-                <Game />
-              </Route>
-              <Route component={NotFound} />
-            </Switch>
-          </Router>
-        </ListProvider>
-      </AudioProvider>
+      <ToastProvider
+        placement={"bottom-center"}
+        components={{ Toast: Toast }}
+        autoDismissTimeout={3000}
+      >
+        <AudioProvider>
+          <ListProvider>
+            <Router>
+              <GlobalStyle />
+              <Switch>
+                <Route exact path="/">
+                  <Home />
+                </Route>
+                <Route exact path="/play">
+                  <Game />
+                </Route>
+                <Route component={NotFound} />
+              </Switch>
+            </Router>
+          </ListProvider>
+        </AudioProvider>
+      </ToastProvider>
     </ThemeProvider>
   );
 }

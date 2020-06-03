@@ -16,6 +16,7 @@
     "react-responsive": "^8.0.3",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
+    "react-toast-notifications": "^2.4.0",
     "shortid": "^2.2.15",
     "styled-components": "^5.1.1",
     "typescript": "^3.7.5"
@@ -49,6 +50,7 @@
   },
   "devDependencies": {
     "@types/react-router-dom": "^5.1.5",
+    "@types/react-toast-notifications": "^2.4.0",
     "@types/shortid": "0.0.29",
     "@types/styled-components": "^5.1.0",
     "husky": "^4.2.5"
