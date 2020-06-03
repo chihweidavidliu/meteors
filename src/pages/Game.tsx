@@ -341,7 +341,11 @@ function Game() {
         <Modal>
           <TitleWrapper>
             <H1>Defend the Earth!</H1>
-            <P>Don't let the meteors past the red line</P>
+            <P>
+              Don't let the meteors past the red line - type the corresponding
+              definition for each term as they hurtle towards Earth in meteor
+              form
+            </P>
 
             <strong>Options</strong>
 
