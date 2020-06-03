@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { IList } from "../../types/List";
-import { useThemeContext } from "../../hooks/useThemeContext";
 import { Button } from "../Button";
 import { IQuestion } from "../../types/Question";
 import { Label } from "../Label";
@@ -9,6 +8,7 @@ import { useQuestionContext } from "../../context/QuestionContext";
 import { useHistory } from "react-router-dom";
 import { getSavedLists } from "../../util/getSavedLists";
 import { updateSavedLists } from "../../util/updateSavedLists";
+import { Colour } from "../../types/Colour";
 
 const Wrapper = styled.div`
   background: white;
@@ -86,7 +86,6 @@ interface IListItemProps {
 
 const ListItem = ({ list, setLists }: IListItemProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { primaryColour } = useThemeContext();
   const { setListName, setQuestions } = useQuestionContext();
   const history = useHistory();
 
@@ -113,10 +112,7 @@ const ListItem = ({ list, setLists }: IListItemProps) => {
           </Button>
           <Button
             onClick={() => setIsExpanded(!isExpanded)}
-            buttonTheme={{
-              primaryColour,
-              hoverColour: "#2e3d49",
-            }}
+            colour={Colour.PRIMARY}
           >
             {isExpanded ? "Hide Terms" : "Show Terms"}
           </Button>
@@ -126,14 +122,11 @@ const ListItem = ({ list, setLists }: IListItemProps) => {
               setQuestions(list.questions);
               setListName(list.name);
             }}
-            buttonTheme={{
-              primaryColour: "#ffd800",
-              hoverColour: "#d8bd20",
-            }}
+            colour={Colour.YELLOW}
           >
             Edit
           </Button>
-          <Button onClick={handleDelete} isDeleteButton>
+          <Button onClick={handleDelete} colour={Colour.RED}>
             Delete
           </Button>
         </ButtonGrid>

@@ -1,7 +1,10 @@
 import { createContext, useContext, SetStateAction } from "react";
 import { IQuestion } from "../types/Question";
+import { IList } from "../types/List";
 
 interface IQuestionContextProps {
+  savedLists: IList[];
+  setSavedLists: (updated: IList[]) => void;
   listName: string;
   setListName: React.Dispatch<SetStateAction<string>>;
   questions: IQuestion[];
@@ -10,6 +13,8 @@ interface IQuestionContextProps {
 }
 
 const initialprops: IQuestionContextProps = {
+  savedLists: [],
+  setSavedLists: () => {},
   listName: "",
   questions: [],
   setQuestions: () => {},

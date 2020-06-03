@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { IList } from "../../types/List";
-import { getSavedLists } from "../../util/getSavedLists";
 import ListItem from "./ListItem";
 import { P } from "../../typography/P";
+import { useQuestionContext } from "../../context/QuestionContext";
 
 const Wrapper = styled.div`
   padding: 20px 0px;
@@ -12,22 +12,17 @@ const Wrapper = styled.div`
 `;
 
 const SavedLists = () => {
-  const [lists, setLists] = useState<IList[]>([]);
-
-  useEffect(() => {
-    const savedLists = getSavedLists();
-    setLists(() => savedLists);
-  }, []);
+  const { savedLists, setSavedLists: updateSavedLists } = useQuestionContext();
 
   return (
     <Wrapper>
-      {lists.length > 0 ? (
-        lists.map((list) => {
+      {savedLists.length > 0 ? (
+        savedLists.map((list) => {
           return (
             <ListItem
               key={list.id}
               list={list}
-              setLists={(lists: IList[]) => setLists(lists)}
+              setLists={(lists: IList[]) => updateSavedLists(lists)}
             />
           );
         })

@@ -11,12 +11,13 @@ import { getSavedLists } from "../../util/getSavedLists";
 import { useHistory } from "react-router-dom";
 import { updateSavedLists } from "../../util/updateSavedLists";
 import { IList } from "../../types/List";
+import { Colour } from "../../types/Colour";
 
 const QuestionCreatorWrapper = styled.div``;
 
 const ToolbarWrapper = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(50px, 200px));
+  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
   grid-gap: 10px;
 `;
 
@@ -65,6 +66,7 @@ const QuestionCreator = () => {
     setListName,
     listName,
     validateQuestions,
+    setSavedLists,
   } = useQuestionContext();
 
   const history = useHistory();
@@ -73,7 +75,7 @@ const QuestionCreator = () => {
 
   const areQuestionsValid = validateQuestions();
 
-  const handleStartClick = () => {
+  const updateLists = () => {
     const existingLists = getSavedLists();
 
     const hasListPreviouslyBeenSaved = existingLists.find(
@@ -91,7 +93,15 @@ const QuestionCreator = () => {
           ...existingLists,
           { id: shortid.generate(), name: listName, questions },
         ];
+
+    // update in state
+    setSavedLists(updatedLists);
+    // update in local storage
     updateSavedLists(updatedLists);
+  };
+
+  const handleStartClick = () => {
+    updateLists();
     history.push("/play");
   };
 
@@ -128,22 +138,24 @@ const QuestionCreator = () => {
     <QuestionCreatorWrapper>
       <ToolbarWrapper>
         <Button
-          isDeleteButton
+          colour={Colour.YELLOW}
           onClick={() => {
             setListName("");
-            setQuestions([
-              createBlankQuestion(),
-              createBlankQuestion(),
-              createBlankQuestion(),
-            ]);
+            setQuestions([createBlankQuestion()]);
           }}
         >
           Reset
         </Button>
+
         {areQuestionsValid && listName && (
-          <StartButton type="button" onClick={handleStartClick}>
-            Start Learning!
-          </StartButton>
+          <>
+            <Button onClick={updateLists} colour={Colour.PRIMARY}>
+              Save
+            </Button>
+            <StartButton type="button" onClick={handleStartClick}>
+              Start Learning!
+            </StartButton>
+          </>
         )}
       </ToolbarWrapper>
       <ListNameWrapper>

@@ -4,6 +4,7 @@ import { IQuestion } from "../../types/Question";
 import Input from "../Input";
 import { Label } from "../Label";
 import { Button } from "../Button";
+import { Colour } from "../../types/Colour";
 
 const QuestionInputWrapper = styled.div`
   display: grid;
@@ -90,7 +91,10 @@ const QuestionInput = ({
         />
       </Label>
 
-      <Button isDeleteButton onClick={() => handleQuestionDelete(question.id)}>
+      <Button
+        colour={Colour.RED}
+        onClick={() => handleQuestionDelete(question.id)}
+      >
         Delete
       </Button>
     </QuestionInputWrapper>
