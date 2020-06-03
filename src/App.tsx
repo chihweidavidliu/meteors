@@ -3,11 +3,11 @@ import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { Switch, BrowserRouter as Router, Route } from "react-router-dom";
 import Game from "./pages/Game";
 import Home from "./pages/Home";
-import { createBlankQuestion } from "./util/createBlankQuestion";
-import { QuestionContext } from "./context/QuestionContext";
+import { ListContext } from "./context/ListContext";
 import NotFound from "./pages/NotFound";
 import { IList } from "./types/List";
 import { getSavedLists } from "./util/getSavedLists";
+import { createNewList } from "./util/createNewList";
 
 const GlobalStyle = createGlobalStyle`
 html {
@@ -42,8 +42,7 @@ const theme = {
 
 function App() {
   const [savedLists, setSavedLists] = useState<IList[]>([]);
-  const [listName, setListName] = useState("");
-  const [questions, setQuestions] = useState([createBlankQuestion()]);
+  const [currentList, setCurrentList] = useState<IList>(createNewList());
 
   useEffect(() => {
     const savedLists = getSavedLists();
@@ -51,26 +50,28 @@ function App() {
   }, []);
 
   const validateQuestions = () => {
-    let isValid = true;
+    let areQuestionsValid = true;
+    let hasSomeEntries = false;
 
-    questions.forEach((question) => {
+    currentList.questions.forEach((question) => {
       if (!question.definition || !question.term) {
-        isValid = false;
+        areQuestionsValid = false;
+      }
+      if (question.definition || question.term) {
+        hasSomeEntries = true;
       }
     });
 
-    return isValid;
+    return { areQuestionsValid, hasSomeEntries };
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <QuestionContext.Provider
+      <ListContext.Provider
         value={{
-          questions,
-          setQuestions,
+          currentList,
+          setCurrentList: (list: IList) => setCurrentList(list),
           validateQuestions,
-          listName,
-          setListName,
           savedLists,
           setSavedLists: (lists: IList[]) => setSavedLists(lists),
         }}
@@ -87,7 +88,7 @@ function App() {
             <Route component={NotFound} />
           </Switch>
         </Router>
-      </QuestionContext.Provider>
+      </ListContext.Provider>
     </ThemeProvider>
   );
 }

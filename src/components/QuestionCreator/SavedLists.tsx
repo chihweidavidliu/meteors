@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { IList } from "../../types/List";
 import ListItem from "./ListItem";
 import { P } from "../../typography/P";
-import { useQuestionContext } from "../../context/QuestionContext";
+import { useListContext } from "../../context/ListContext";
 
 const Wrapper = styled.div`
   padding: 20px 0px;
@@ -12,7 +12,7 @@ const Wrapper = styled.div`
 `;
 
 const SavedLists = () => {
-  const { savedLists, setSavedLists: updateSavedLists } = useQuestionContext();
+  const { savedLists, setSavedLists: updateSavedLists } = useListContext();
 
   return (
     <Wrapper>

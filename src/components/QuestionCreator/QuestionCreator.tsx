@@ -4,7 +4,7 @@ import { IQuestion } from "../../types/Question";
 import shortid from "shortid";
 import QuestionInput from "./QuestionInput";
 import { Button } from "../Button";
-import { useQuestionContext } from "../../context/QuestionContext";
+import { useListContext } from "../../context/ListContext";
 import Input from "../Input";
 import { Label } from "../Label";
 import { getSavedLists } from "../../util/getSavedLists";
@@ -12,6 +12,7 @@ import { useHistory } from "react-router-dom";
 import { updateSavedLists } from "../../util/updateSavedLists";
 import { IList } from "../../types/List";
 import { Colour } from "../../types/Colour";
+import { createNewList } from "../../util/createNewList";
 
 const QuestionCreatorWrapper = styled.div``;
 
@@ -61,37 +62,39 @@ const createBlankQuestion = () => ({
 
 const QuestionCreator = () => {
   const {
-    questions,
-    setQuestions,
-    setListName,
-    listName,
     validateQuestions,
     setSavedLists,
-  } = useQuestionContext();
+    currentList,
+    setCurrentList,
+  } = useListContext();
 
   const history = useHistory();
-  const [listNameValue, setListNameValue] = useState(listName);
+  const [listNameValue, setListNameValue] = useState(currentList.name);
   const [listNameError, setListNameError] = useState("");
 
-  const areQuestionsValid = validateQuestions();
+  const { areQuestionsValid } = validateQuestions();
 
   const updateLists = () => {
     const existingLists = getSavedLists();
 
     const hasListPreviouslyBeenSaved = existingLists.find(
-      (list) => list.name === listName
+      (list) => list.name === currentList.name
     );
 
     const updatedLists: IList[] = hasListPreviouslyBeenSaved
       ? existingLists.map((savedList) => {
-          if (savedList.name === listName) {
-            return { ...savedList, questions };
+          if (savedList.name === currentList.name) {
+            return { ...savedList, questions: currentList.questions };
           }
           return savedList;
         })
       : [
           ...existingLists,
-          { id: shortid.generate(), name: listName, questions },
+          {
+            id: shortid.generate(),
+            name: currentList.name,
+            questions: currentList.questions,
+          },
         ];
 
     // update in state
@@ -106,32 +109,34 @@ const QuestionCreator = () => {
   };
 
   useEffect(() => {
-    setListNameValue(listName);
-  }, [listName]);
+    setListNameValue(currentList.name);
+  }, [currentList.name]);
 
   const handleQuestionUpdate = (updatedQuestion: IQuestion) => {
-    setQuestions((prevQuestions) =>
-      prevQuestions.map((question) => {
-        if (question.id === updatedQuestion.id) {
-          return updatedQuestion;
-        }
-        return question;
-      })
-    );
+    const updatedQuestions = currentList.questions.map((question) => {
+      if (question.id === updatedQuestion.id) {
+        return updatedQuestion;
+      }
+      return question;
+    });
+
+    setCurrentList({ ...currentList, questions: updatedQuestions });
   };
 
   const addQuestion = () => {
-    setQuestions((prevQuestions) => [...prevQuestions, createBlankQuestion()]);
+    setCurrentList({
+      ...currentList,
+      questions: [...currentList.questions, createBlankQuestion()],
+    });
   };
 
   const deleteQuestion = (questionId: string) => {
-    setQuestions((prevQuestions) => {
-      if (prevQuestions.length === 1) {
-        return [createBlankQuestion()];
-      }
+    const updatedQuestions =
+      currentList.questions.length > 1
+        ? currentList.questions.filter((question) => question.id !== questionId)
+        : [createBlankQuestion()];
 
-      return prevQuestions.filter((question) => question.id !== questionId);
-    });
+    setCurrentList({ ...currentList, questions: updatedQuestions });
   };
 
   return (
@@ -140,14 +145,13 @@ const QuestionCreator = () => {
         <Button
           colour={Colour.YELLOW}
           onClick={() => {
-            setListName("");
-            setQuestions([createBlankQuestion()]);
+            setCurrentList(createNewList());
           }}
         >
           Reset
         </Button>
 
-        {areQuestionsValid && listName && (
+        {areQuestionsValid && currentList.name && (
           <>
             <Button onClick={updateLists} colour={Colour.PRIMARY}>
               Save
@@ -171,7 +175,7 @@ const QuestionCreator = () => {
                 return setListNameError("List name is required");
               }
               setListNameError("");
-              setListName(listNameValue);
+              setCurrentList({ ...currentList, name: listNameValue });
             }}
             error={listNameError}
           />
@@ -179,7 +183,7 @@ const QuestionCreator = () => {
       </ListNameWrapper>
 
       <InnerWrapper>
-        {questions.map((question) => (
+        {currentList.questions.map((question) => (
           <QuestionInput
             key={question.id}
             question={question}

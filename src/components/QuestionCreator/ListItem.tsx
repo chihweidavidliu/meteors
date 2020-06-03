@@ -4,7 +4,7 @@ import { IList } from "../../types/List";
 import { Button } from "../Button";
 import { IQuestion } from "../../types/Question";
 import { Label } from "../Label";
-import { useQuestionContext } from "../../context/QuestionContext";
+import { useListContext } from "../../context/ListContext";
 import { useHistory } from "react-router-dom";
 import { getSavedLists } from "../../util/getSavedLists";
 import { updateSavedLists } from "../../util/updateSavedLists";
@@ -86,7 +86,7 @@ interface IListItemProps {
 
 const ListItem = ({ list, setLists }: IListItemProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { setListName, setQuestions } = useQuestionContext();
+  const { setCurrentList } = useListContext();
   const history = useHistory();
 
   const handleDelete = () => {
@@ -103,8 +103,7 @@ const ListItem = ({ list, setLists }: IListItemProps) => {
         <ButtonGrid>
           <Button
             onClick={() => {
-              setListName(list.name);
-              setQuestions(list.questions);
+              setCurrentList(list);
               history.push("/play");
             }}
           >
@@ -119,8 +118,7 @@ const ListItem = ({ list, setLists }: IListItemProps) => {
 
           <Button
             onClick={() => {
-              setQuestions(list.questions);
-              setListName(list.name);
+              setCurrentList(list);
             }}
             colour={Colour.YELLOW}
           >

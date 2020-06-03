@@ -9,7 +9,7 @@ import { Button } from "../components/Button";
 import Cannon from "../components/Cannon";
 import { IQuestion } from "../types/Question";
 import { calculateCannonRotation } from "../util/calculateCannonRotation";
-import { useQuestionContext } from "../context/QuestionContext";
+import { useListContext } from "../context/ListContext";
 import { useHistory } from "react-router-dom";
 import { StarryBackground } from "../components/Background/StarryBackground";
 import Card from "../components/Card";
@@ -17,6 +17,7 @@ import { H1 } from "../typography/H1";
 import worldImage from "../assets/world.svg";
 import { P } from "../typography/P";
 import { H2 } from "../typography/H2";
+import { createNewList } from "../util/createNewList";
 const levelUpSound = require("../assets/levelUp.mp3");
 const laserSound = require("../assets/laser.mp3");
 const errorSound = require("../assets/error.mp3");
@@ -78,8 +79,10 @@ const World = styled.img`
 `;
 
 function Game() {
-  const questionContext = useQuestionContext();
-  const initialQuestions = questionContext.questions;
+  const listContext = useListContext();
+  const initialQuestions = listContext.currentList.questions;
+  const { areQuestionsValid } = listContext.validateQuestions();
+
   const history = useHistory();
 
   const [inputRef] = useState(createRef<HTMLInputElement>());
@@ -105,10 +108,14 @@ function Game() {
   const meteorSize = 100;
 
   useEffect(() => {
-    if (initialQuestions.length === 0 || !questionContext.validateQuestions()) {
+    if (
+      initialQuestions.length === 0 ||
+      !listContext.validateQuestions() ||
+      !areQuestionsValid
+    ) {
       history.push("/");
     }
-  }, [history, initialQuestions.length, questionContext]);
+  }, [areQuestionsValid, history, initialQuestions.length, listContext]);
 
   useEffect(() => {
     if (isStarted) {
@@ -259,8 +266,7 @@ function Game() {
           <Button onClick={handleStartClick}>Restart</Button>
           <Button
             onClick={() => {
-              questionContext.setQuestions([]);
-              questionContext.setListName("");
+              listContext.setCurrentList(createNewList());
               history.push("/");
             }}
           >
