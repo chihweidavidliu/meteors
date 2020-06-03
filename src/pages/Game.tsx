@@ -58,6 +58,10 @@ const StyledInput = styled.input`
   &:focus {
     outline: 1px solid ${(props) => props.theme.primaryColour};
   }
+
+  @media (max-width: 376px) {
+    margin-top: 0px;
+  }
 `;
 
 const World = styled.img`

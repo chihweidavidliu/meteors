@@ -2,17 +2,26 @@ import { useState, useLayoutEffect } from "react";
 import { useMediaQuery } from "react-responsive";
 
 export const useResizeHandler = () => {
-  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1024px)" });
-  const initialScreenWidth = isTabletOrMobile
+  const isTabletOrSmallDesktop = useMediaQuery({
+    query: "(max-width: 1024px)",
+  });
+
+  const isMobileOrTablet = useMediaQuery({
+    query: "(max-width: 767px)",
+  });
+
+  const initialScreenWidth = isTabletOrSmallDesktop
     ? window.innerWidth
     : window.innerWidth * 0.6;
 
   const [screenWidth, setScreenWidth] = useState(initialScreenWidth);
-  const [screenHeight] = useState(700);
+  const [screenHeight] = useState(
+    isMobileOrTablet ? window.innerHeight * 0.8 : 700
+  );
 
   useLayoutEffect(() => {
     const handleResize = () => {
-      const width = isTabletOrMobile
+      const width = isTabletOrSmallDesktop
         ? window.innerWidth
         : window.innerWidth * 0.8;
 
@@ -21,7 +30,7 @@ export const useResizeHandler = () => {
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
-  }, [isTabletOrMobile, screenWidth]);
+  }, [isTabletOrSmallDesktop, screenWidth]);
 
   return { screenWidth, screenHeight };
 };
