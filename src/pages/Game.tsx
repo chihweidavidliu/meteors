@@ -4,47 +4,18 @@ import { GameContext } from "../context/GameContext";
 import Meteor from "../components/Meteor";
 import { useResizeHandler } from "../hooks/useResizeHandler";
 import { useQuestionHandler } from "../hooks/useQuestionHandler";
-import { Button } from "../components/Button";
 import Cannon from "../components/Cannon";
 import { IQuestion } from "../types/Question";
 import { calculateCannonRotation } from "../util/calculateCannonRotation";
 import { useListContext } from "../context/ListContext";
 import { useHistory } from "react-router-dom";
 import { StarryBackground } from "../components/Background/StarryBackground";
-import Card from "../components/Card";
-import { H1 } from "../typography/H1";
 import worldImage from "../assets/world.svg";
-import { P } from "../typography/P";
-import { H2 } from "../typography/H2";
 import { createNewList } from "../util/createNewList";
 
 import { useAudioContext, SoundEffect } from "../context/AudioContext";
-import Tooltip from "../components/Tooltip";
-import Checkbox from "../components/Checkbox";
-
-const Modal = styled(Card)`
-  position: absolute;
-  width: 500px;
-  left: calc(50vw - 250px);
-  bottom: calc(50vh - 125px);
-  background: whitesmoke;
-  display: grid;
-  grid-gap: 20px;
-  grid-template-columns: 1fr;
-  grid-template-rows: max-content 1fr;
-  justify-content: center;
-  text-align: center;
-  z-index: 3;
-
-  @media (max-width: 767px) {
-    width: 90vw;
-    left: calc(50vw - 90vw / 2);
-  }
-`;
-
-const TitleWrapper = styled.div`
-  text-align: center;
-`;
+import InstructionsModal from "../components/InstructionsModal";
+import ResultsModal from "../components/ResultsModal";
 
 const PlayArea = styled.div<{ screenWidth: number; screenHeight: number }>`
   position: relative;
@@ -95,33 +66,13 @@ const World = styled.img`
   }
 `;
 
-const OptionsWrapper = styled.div`
-  display: grid;
-  grid-gap: 15px;
-  padding: 15px 0px;
-`;
-
-const CheckboxWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr max-content;
-  grid-gap: 10px;
-  align-items: center;
-  @media (max-width: 376px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
 function Game() {
   const listContext = useListContext();
   const initialQuestions = listContext.currentList.questions;
   const { areQuestionsValid } = listContext.validateQuestions();
 
   const history = useHistory();
-  const {
-    playAudio,
-    isBackgroundMusicDisabled,
-    setIsBackgroundMusicDisabled,
-  } = useAudioContext();
+  const { playAudio, setIsBackgroundMusicDisabled } = useAudioContext();
 
   const [inputRef] = useState(createRef<HTMLInputElement>());
   const [isStarted, setIsStarted] = useState(false);
@@ -155,7 +106,7 @@ function Game() {
       !listContext.validateQuestions() ||
       !areQuestionsValid
     ) {
-      history.push("/");
+      // history.push("/");
     }
   }, [
     areQuestionsValid,
@@ -276,6 +227,8 @@ function Game() {
   };
 
   const handleStartClick = (isRestart?: boolean) => {
+    playAudio(SoundEffect.BACKGROUND);
+
     // save previous results to local storage
     const listWithUpdatedScores = saveResultsToLists();
     // only reset this data when starting new game as we want to preserve results to display to user
@@ -315,6 +268,8 @@ function Game() {
     <GameContext.Provider
       value={{
         areTermsAndDefsSwapped,
+        setAreTermsAndDefsSwapped: (areSwapped: boolean) =>
+          setAreTermsAndDefsSwapped(areSwapped),
         isStarted,
         setIsStarted: (isStarted: boolean) => setIsStarted(isStarted),
         endGame,
@@ -338,58 +293,14 @@ function Game() {
       }}
     >
       {!isStarted && !areResultsVisible && (
-        <Modal>
-          <TitleWrapper>
-            <H1>Defend the Earth!</H1>
-            <P>
-              Don't let the meteors past the red line - type the corresponding
-              definition for each term as they hurtle towards Earth in meteor
-              form
-            </P>
-
-            <strong>Options</strong>
-
-            <OptionsWrapper>
-              <CheckboxWrapper>
-                <Checkbox
-                  id={"swap-checkbox"}
-                  handleChange={() =>
-                    setAreTermsAndDefsSwapped(!areTermsAndDefsSwapped)
-                  }
-                  isChecked={areTermsAndDefsSwapped}
-                  label="Swap terms and definitions"
-                />
-                <Tooltip>
-                  Check this if you want to practise remembering terms from
-                  their given definition
-                </Tooltip>
-              </CheckboxWrapper>
-
-              <Checkbox
-                id={"music-checkbox"}
-                handleChange={() =>
-                  setIsBackgroundMusicDisabled(!isBackgroundMusicDisabled)
-                }
-                isChecked={isBackgroundMusicDisabled}
-                label="Disable background music"
-              />
-            </OptionsWrapper>
-          </TitleWrapper>
-
-          <Button onClick={() => handleStartClick()}>
-            {isStarted ? "End" : "Start"}
-          </Button>
-        </Modal>
+        <InstructionsModal handleStartClick={handleStartClick} />
       )}
 
       {areResultsVisible && (
-        <Modal>
-          <H1>Your Score</H1>
-          <H2>{score}</H2>
-
-          <Button onClick={() => handleStartClick(true)}>Restart</Button>
-          <Button onClick={handleHomeClick}>Home</Button>
-        </Modal>
+        <ResultsModal
+          handleHomeClick={handleHomeClick}
+          handleStartClick={handleStartClick}
+        />
       )}
 
       <StarryBackground noPadding>

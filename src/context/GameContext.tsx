@@ -4,6 +4,7 @@ import { IQuestion } from "../types/Question";
 interface IGameContextProps {
   isStarted: boolean;
   areTermsAndDefsSwapped: boolean;
+  setAreTermsAndDefsSwapped: (areSwapped: boolean) => void;
   setIsStarted: (isStarted: boolean) => void;
   screenWidth: number;
   screenHeight: number;
@@ -45,6 +46,7 @@ const initialprops: IGameContextProps = {
   setAreResultsVisible: () => {},
   endGame: () => {},
   areTermsAndDefsSwapped: false,
+  setAreTermsAndDefsSwapped: () => {},
 };
 
 const GameContext = createContext(initialprops);

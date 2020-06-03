@@ -55,9 +55,6 @@ const AudioProvider: FunctionComponent = ({ children }) => {
       if (backgroundAudioRef?.current) {
         backgroundAudioRef.current.currentTime = 0;
       }
-    } else {
-      setAudioVolume(backgroundAudioRef, 0.2);
-      backgroundAudioRef?.current?.play();
     }
   }, [backgroundAudioRef, isBackgroundMusicDisabled]);
 
