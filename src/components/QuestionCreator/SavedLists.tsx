@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { IList } from "../../types/List";
 import ListItem from "./ListItem";
 import { P } from "../../typography/P";
 import { useListContext } from "../../context/ListContext";
@@ -12,19 +11,13 @@ const Wrapper = styled.div`
 `;
 
 const SavedLists = () => {
-  const { savedLists, setSavedLists: updateSavedLists } = useListContext();
+  const { savedLists } = useListContext();
 
   return (
     <Wrapper>
       {savedLists.length > 0 ? (
         savedLists.map((list) => {
-          return (
-            <ListItem
-              key={list.id}
-              list={list}
-              setLists={(lists: IList[]) => updateSavedLists(lists)}
-            />
-          );
+          return <ListItem key={list.id} list={list} />;
         })
       ) : (
         <P noMargin>

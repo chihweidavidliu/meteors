@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { IQuestion } from "../../types/Question";
 import shortid from "shortid";
@@ -7,10 +8,6 @@ import { Button } from "../Button";
 import { useListContext } from "../../context/ListContext";
 import Input from "../Input";
 import { Label } from "../Label";
-import { getSavedLists } from "../../util/getSavedLists";
-import { useHistory } from "react-router-dom";
-import { updateSavedLists } from "../../util/updateSavedLists";
-import { IList } from "../../types/List";
 import { Colour } from "../../types/Colour";
 import { createNewList } from "../../util/createNewList";
 
@@ -63,48 +60,19 @@ const createBlankQuestion = () => ({
 const QuestionCreator = () => {
   const {
     validateQuestions,
-    setSavedLists,
     currentList,
     setCurrentList,
+    updateLists,
   } = useListContext();
 
   const history = useHistory();
   const [listNameValue, setListNameValue] = useState(currentList.name);
   const [listNameError, setListNameError] = useState("");
 
-  const { areQuestionsValid } = validateQuestions();
-
-  const updateLists = () => {
-    const existingLists = getSavedLists();
-
-    const hasListPreviouslyBeenSaved = existingLists.find(
-      (list) => list.name === currentList.name
-    );
-
-    const updatedLists: IList[] = hasListPreviouslyBeenSaved
-      ? existingLists.map((savedList) => {
-          if (savedList.name === currentList.name) {
-            return { ...savedList, questions: currentList.questions };
-          }
-          return savedList;
-        })
-      : [
-          ...existingLists,
-          {
-            id: shortid.generate(),
-            name: currentList.name,
-            questions: currentList.questions,
-          },
-        ];
-
-    // update in state
-    setSavedLists(updatedLists);
-    // update in local storage
-    updateSavedLists(updatedLists);
-  };
+  const { areQuestionsValid, hasSomeEntries } = validateQuestions();
 
   const handleStartClick = () => {
-    updateLists();
+    updateLists(currentList);
     history.push("/play");
   };
 
@@ -142,18 +110,23 @@ const QuestionCreator = () => {
   return (
     <QuestionCreatorWrapper>
       <ToolbarWrapper>
-        <Button
-          colour={Colour.YELLOW}
-          onClick={() => {
-            setCurrentList(createNewList());
-          }}
-        >
-          Reset
-        </Button>
+        {hasSomeEntries && (
+          <Button
+            colour={Colour.YELLOW}
+            onClick={() => {
+              setCurrentList(createNewList());
+            }}
+          >
+            Reset
+          </Button>
+        )}
 
         {areQuestionsValid && currentList.name && (
           <>
-            <Button onClick={updateLists} colour={Colour.PRIMARY}>
+            <Button
+              onClick={() => updateLists(currentList)}
+              colour={Colour.PRIMARY}
+            >
               Save
             </Button>
             <StartButton type="button" onClick={handleStartClick}>

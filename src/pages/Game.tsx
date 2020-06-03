@@ -67,7 +67,14 @@ const StyledInput = styled.input`
 
 const ScoreWrapper = styled.div`
   z-index: 2;
-  font-size: 36px;
+  font-size: 100px;
+  position: fixed;
+  right: 50px;
+  top: 50px;
+  @media (max-width: 767px) {
+    position: static;
+    font-size: 30px;
+  }
 `;
 
 const World = styled.img`
@@ -294,9 +301,7 @@ function Game() {
             <World src={worldImage} />
           </Cannon>
         </PlayArea>
-
         <ScoreWrapper>{score}</ScoreWrapper>
-
         <StyledInput
           ref={inputRef}
           placeholder="Type answers here"

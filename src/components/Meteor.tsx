@@ -60,6 +60,7 @@ const Meteor = ({ question }: IMeteorProps) => {
     score,
     setAreResultsVisible,
   } = useGameContext();
+
   const [position, setPosition] = useState<IPosition>({
     positionX: getRandomInt(screenWidth - meteorSize),
     positionY: screenHeight,

@@ -11,6 +11,7 @@ import SavedLists from "../components/QuestionCreator/SavedLists";
 const CardWrapper = styled.div`
   display: grid;
   width: 100%;
+  max-width: 1440px;
   padding: 40px;
   grid-template-columns: 1fr 1fr;
   grid-auto-rows: max-content;
@@ -52,7 +53,7 @@ const Home = () => {
         </Card>
         <Card fadeIn isWrapped>
           <TitleWrapper>
-            <H2>Create Questions</H2>
+            <H2>Create List</H2>
           </TitleWrapper>
           <QuestionCreator />
         </Card>

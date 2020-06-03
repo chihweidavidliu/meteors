@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { Switch, BrowserRouter as Router, Route } from "react-router-dom";
 import Game from "./pages/Game";
 import Home from "./pages/Home";
-import { ListContext } from "./context/ListContext";
+import { ListProvider } from "./context/ListContext";
 import NotFound from "./pages/NotFound";
-import { IList } from "./types/List";
-import { getSavedLists } from "./util/getSavedLists";
-import { createNewList } from "./util/createNewList";
 
 const GlobalStyle = createGlobalStyle`
 html {
@@ -41,41 +38,9 @@ const theme = {
 };
 
 function App() {
-  const [savedLists, setSavedLists] = useState<IList[]>([]);
-  const [currentList, setCurrentList] = useState<IList>(createNewList());
-
-  useEffect(() => {
-    const savedLists = getSavedLists();
-    setSavedLists(() => savedLists);
-  }, []);
-
-  const validateQuestions = () => {
-    let areQuestionsValid = true;
-    let hasSomeEntries = false;
-
-    currentList.questions.forEach((question) => {
-      if (!question.definition || !question.term) {
-        areQuestionsValid = false;
-      }
-      if (question.definition || question.term) {
-        hasSomeEntries = true;
-      }
-    });
-
-    return { areQuestionsValid, hasSomeEntries };
-  };
-
   return (
     <ThemeProvider theme={theme}>
-      <ListContext.Provider
-        value={{
-          currentList,
-          setCurrentList: (list: IList) => setCurrentList(list),
-          validateQuestions,
-          savedLists,
-          setSavedLists: (lists: IList[]) => setSavedLists(lists),
-        }}
-      >
+      <ListProvider>
         <Router>
           <GlobalStyle />
           <Switch>
@@ -88,7 +53,7 @@ function App() {
             <Route component={NotFound} />
           </Switch>
         </Router>
-      </ListContext.Provider>
+      </ListProvider>
     </ThemeProvider>
   );
 }

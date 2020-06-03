@@ -6,8 +6,6 @@ import { IQuestion } from "../../types/Question";
 import { Label } from "../Label";
 import { useListContext } from "../../context/ListContext";
 import { useHistory } from "react-router-dom";
-import { getSavedLists } from "../../util/getSavedLists";
-import { updateSavedLists } from "../../util/updateSavedLists";
 import { Colour } from "../../types/Colour";
 
 const Wrapper = styled.div`
@@ -81,20 +79,12 @@ const QuestionDetail = ({ question }: IQuestionDetailProps) => {
 
 interface IListItemProps {
   list: IList;
-  setLists: (lists: IList[]) => void;
 }
 
-const ListItem = ({ list, setLists }: IListItemProps) => {
+const ListItem = ({ list }: IListItemProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { setCurrentList } = useListContext();
+  const { setCurrentList, deleteList } = useListContext();
   const history = useHistory();
-
-  const handleDelete = () => {
-    const savedLists = getSavedLists();
-    const updated = savedLists.filter((savedList) => savedList.id !== list.id);
-    updateSavedLists(updated);
-    setLists(updated);
-  };
 
   return (
     <Wrapper>
@@ -124,7 +114,7 @@ const ListItem = ({ list, setLists }: IListItemProps) => {
           >
             Edit
           </Button>
-          <Button onClick={handleDelete} colour={Colour.RED}>
+          <Button onClick={() => deleteList(list)} colour={Colour.RED}>
             Delete
           </Button>
         </ButtonGrid>
