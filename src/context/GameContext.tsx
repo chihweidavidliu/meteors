@@ -20,6 +20,7 @@ interface IGameContextProps {
   destroyMeteor: (destroyed: IQuestion) => void;
   areResultsVisible: boolean;
   setAreResultsVisible: (areVisible: boolean) => void;
+  endGame: () => void;
 }
 
 const initialprops: IGameContextProps = {
@@ -41,6 +42,7 @@ const initialprops: IGameContextProps = {
   destroyMeteor: () => {},
   areResultsVisible: false,
   setAreResultsVisible: () => {},
+  endGame: () => {},
 };
 
 const GameContext = createContext(initialprops);

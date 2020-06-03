@@ -161,16 +161,19 @@ function Game() {
       (question) => question.id !== answeredQuestion.id
     );
     setActiveQuestions(updatedActiveQuestions);
-    setQuestions([
+
+    const updatedQuestions = [
       ...questions,
       {
         ...answeredQuestion,
         stats: {
-          correctlyAnswered: stats.correctlyAnswered++,
+          correctlyAnswered: stats.correctlyAnswered + 1,
           appearances: stats.appearances,
         },
       },
-    ]);
+    ];
+
+    setQuestions(updatedQuestions);
 
     const newScore = score + 1;
     if (newScore % 10 === 0) {
@@ -202,7 +205,7 @@ function Game() {
 
     fireCannon(theta, hypotenuse);
 
-    setTimeout(() => updateQuestionsAndScores(answeredQuestion), 100);
+    setTimeout(() => updateQuestionsAndScores(answeredQuestion), 50);
   };
 
   const checkAnswer = (inputValue: string) => {
@@ -222,9 +225,29 @@ function Game() {
     setInputValue("");
   };
 
+  const saveResultsToLists = () => {
+    // update questions counts in saved lists
+    const { currentList, updateLists, setCurrentList } = listContext;
+    const updatedQuestions = [...activeQuestions, ...questions];
+    const updatedList = {
+      ...currentList,
+      questions: currentList.questions.map((question) => {
+        const updated = updatedQuestions.find(
+          (updatedQuestion) => updatedQuestion.id === question.id
+        );
+        return updated ? updated : question;
+      }),
+    };
+    updateLists(updatedList);
+    setCurrentList(updatedList);
+    return updatedList;
+  };
+
   const handleStartClick = () => {
+    // save results to local storage
+    const listWithUpdatedScores = saveResultsToLists();
     // only reset this data when starting new game as we want to preserve results to display to user
-    setQuestions(initialQuestions);
+    setQuestions(listWithUpdatedScores.questions);
     setActiveQuestions([]);
     setScore(0);
     setAreResultsVisible(false);
@@ -233,11 +256,25 @@ function Game() {
     setIsStarted(!isStarted);
   };
 
+  const handleHomeClick = () => {
+    // save results
+    saveResultsToLists();
+    // clear current list and redirect home
+    listContext.setCurrentList(createNewList());
+    history.push("/");
+  };
+
+  const endGame = () => {
+    setIsStarted(false);
+    setAreResultsVisible(true);
+  };
+
   return (
     <GameContext.Provider
       value={{
         isStarted,
         setIsStarted: (isStarted: boolean) => setIsStarted(isStarted),
+        endGame,
         screenHeight,
         screenWidth,
         inputValue,
@@ -276,14 +313,7 @@ function Game() {
           <H2>{score}</H2>
 
           <Button onClick={handleStartClick}>Restart</Button>
-          <Button
-            onClick={() => {
-              listContext.setCurrentList(createNewList());
-              history.push("/");
-            }}
-          >
-            Home
-          </Button>
+          <Button onClick={handleHomeClick}>Home</Button>
         </Modal>
       )}
 

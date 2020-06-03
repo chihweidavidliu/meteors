@@ -25,7 +25,7 @@ export const useQuestionHandler = (
           ...prevQuestions,
           {
             ...chosen,
-            stats: { ...stats, appearances: stats.appearances++ },
+            stats: { ...stats, appearances: stats.appearances + 1 },
           },
         ];
       });

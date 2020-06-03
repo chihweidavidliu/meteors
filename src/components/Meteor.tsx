@@ -56,9 +56,8 @@ const Meteor = ({ question }: IMeteorProps) => {
     meteorSize,
     screenWidth,
     screenHeight,
-    setIsStarted,
     score,
-    setAreResultsVisible,
+    endGame,
   } = useGameContext();
 
   const [position, setPosition] = useState<IPosition>({
@@ -110,13 +109,12 @@ const Meteor = ({ question }: IMeteorProps) => {
       });
 
       if (shouldGameEnd) {
-        setIsStarted(false);
-        setAreResultsVisible(true);
+        endGame();
       }
     }, calculateInterval());
 
     return () => clearInterval(interval);
-  }, [score, setAreResultsVisible, setIsStarted]);
+  }, [endGame, score]);
 
   return (
     <MeteorWrapper

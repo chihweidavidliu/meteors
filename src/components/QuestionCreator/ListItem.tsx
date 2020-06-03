@@ -49,7 +49,7 @@ const QuestionList = styled.div`
 
 const QuestionWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr max-content 1fr;
+  grid-template-columns: 1fr max-content 1fr max-content 1fr;
   grid-gap: 20px;
 `;
 
@@ -59,11 +59,16 @@ const Divider = styled.div`
   background: lightgray;
 `;
 
+const StatsWrapper = styled.div`
+  font-size: 14px;
+`;
+
 interface IQuestionDetailProps {
   question: IQuestion;
 }
 
 const QuestionDetail = ({ question }: IQuestionDetailProps) => {
+  const { stats } = question;
   return (
     <QuestionWrapper>
       <Label>
@@ -72,6 +77,18 @@ const QuestionDetail = ({ question }: IQuestionDetailProps) => {
       <Divider />
       <Label>
         Definition <strong>{question.definition}</strong>
+      </Label>
+      <Divider />
+      <Label>
+        Stats
+        <StatsWrapper>
+          <div>
+            Appeared: {stats.appearances} time
+            {stats.appearances === 1 ? "" : "s"} <br />
+            Destroyed: {stats.correctlyAnswered} time
+            {stats.correctlyAnswered === 1 ? "" : "s"} <br />
+          </div>
+        </StatsWrapper>
       </Label>
     </QuestionWrapper>
   );
