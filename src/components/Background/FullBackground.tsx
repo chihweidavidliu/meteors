@@ -10,7 +10,7 @@ const FullBackground: FunctionComponent = ({ children }) => {
       <ImageElement
         src={meteorImage}
         style={{
-          bottom: "50vh",
+          top: "10vh",
           left: "60vw",
         }}
       />
@@ -18,7 +18,7 @@ const FullBackground: FunctionComponent = ({ children }) => {
       <ImageElement
         src={worldImage}
         style={{
-          bottom: "-100px",
+          top: "70vh",
           left: "-100px",
         }}
       />
