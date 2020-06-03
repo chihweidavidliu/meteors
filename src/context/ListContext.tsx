@@ -8,7 +8,6 @@ import { updateSavedLists } from "../util/updateSavedLists";
 
 interface IListContextProps {
   savedLists: IList[];
-  setSavedLists: (updated: IList[]) => void;
   updateLists: (updated: IList) => void;
   deleteList: (list: IList) => void;
   currentList: IList;
@@ -21,7 +20,6 @@ interface IListContextProps {
 
 const initialprops: IListContextProps = {
   savedLists: [],
-  setSavedLists: () => {},
   updateLists: () => {},
   deleteList: () => {},
   currentList: createNewList(),
@@ -103,12 +101,6 @@ const ListProvider: FunctionComponent = ({ children }) => {
         setCurrentList: (list: IList) => setCurrentList(list),
         validateQuestions,
         savedLists,
-        setSavedLists: (lists: IList[]) => {
-          // set in state
-          setSavedLists(lists);
-          // save to local storage
-          updateSavedLists(lists);
-        },
         updateLists,
         deleteList,
       }}
