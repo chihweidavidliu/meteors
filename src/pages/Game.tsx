@@ -65,6 +65,11 @@ const StyledInput = styled.input`
   }
 `;
 
+const ScoreWrapper = styled.div`
+  z-index: 2;
+  font-size: 36px;
+`;
+
 const World = styled.img`
   position: absolute;
   z-index: 0;
@@ -170,8 +175,8 @@ function Game() {
   };
 
   const destroyMeteor = async (answeredQuestion: IQuestion) => {
-    const meteorElement = document.querySelector(
-      `#${answeredQuestion.term}`
+    const meteorElement = document.getElementById(
+      answeredQuestion.id
     ) as HTMLElement;
 
     if (
@@ -290,7 +295,8 @@ function Game() {
           </Cannon>
         </PlayArea>
 
-        {score}
+        <ScoreWrapper>{score}</ScoreWrapper>
+
         <StyledInput
           ref={inputRef}
           placeholder="Type answers here"
