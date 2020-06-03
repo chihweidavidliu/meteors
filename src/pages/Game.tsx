@@ -17,21 +17,28 @@ import worldImage from "../assets/world.svg";
 import { P } from "../typography/P";
 import { H2 } from "../typography/H2";
 import { createNewList } from "../util/createNewList";
-import { Label } from "../components/Label";
+
 import { useAudioContext, SoundEffect } from "../context/AudioContext";
+import Tooltip from "../components/Tooltip";
 
 const Modal = styled(Card)`
-  position: fixed;
-  width: 300px;
-  left: calc(50vw - 150px);
+  position: absolute;
+  width: 500px;
+  left: calc(50vw - 250px);
   bottom: calc(50vh - 125px);
   background: whitesmoke;
   display: grid;
-  grid-gap: 30px;
+  grid-gap: 20px;
+  grid-template-columns: 1fr;
   grid-template-rows: max-content 1fr;
   justify-content: center;
   text-align: center;
   z-index: 3;
+
+  @media (max-width: 767px) {
+    width: 90vw;
+    left: calc(50vw - 90vw / 2);
+  }
 `;
 
 const TitleWrapper = styled.div`
@@ -84,6 +91,30 @@ const World = styled.img`
   @media (max-width: 767px) {
     width: 100vw;
     left: -50vw;
+  }
+`;
+
+const OptionsWrapper = styled.div`
+  display: grid;
+  grid-gap: 15px;
+  padding: 15px 0px;
+`;
+
+const FlexBox = styled.div`
+  display: flex;
+  align-items: center;
+  @media (max-width: 376px) {
+    justify-content: center;
+  }
+`;
+
+const CheckboxWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  grid-gap: 10px;
+  align-items: center;
+  @media (max-width: 376px) {
+    grid-template-columns: 1fr;
   }
 `;
 
@@ -291,13 +322,23 @@ function Game() {
             <H1>Defend the Earth!</H1>
             <P>Don't let the meteors past the red line</P>
 
-            <Label>
-              Options
-              <div>
-                <input type="checkbox" />
-                Swap terms and definitions
-              </div>
-            </Label>
+            <strong>Options</strong>
+
+            <OptionsWrapper>
+              <CheckboxWrapper>
+                <FlexBox>
+                  <input type="checkbox" id="swap-checkbox" />
+                  <label htmlFor="swap-checkbox">
+                    <P noMargin>Swap terms and definitions</P>
+                  </label>
+                </FlexBox>
+
+                <Tooltip>
+                  Check this if you want to practise remembering terms from the
+                  definitions
+                </Tooltip>
+              </CheckboxWrapper>
+            </OptionsWrapper>
           </TitleWrapper>
 
           <Button onClick={() => handleStartClick()}>
