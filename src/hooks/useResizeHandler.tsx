@@ -10,10 +10,6 @@ export const useResizeHandler = () => {
     query: "(max-width: 1024px)",
   });
 
-  const isMobileOrTablet = useMediaQuery({
-    query: "(max-width: 767px)",
-  });
-
   const initialScreenWidth = isTabletOrSmallDesktop
     ? window.innerWidth
     : window.innerWidth * 0.6;
@@ -22,10 +18,7 @@ export const useResizeHandler = () => {
 
   const initialScreenHeight = isHighResolution
     ? window.innerHeight * 0.85
-    : isMobileOrTablet
-    ? window.innerHeight * 0.8
-    : 700;
-
+    : window.innerHeight * 0.8;
   const [screenHeight] = useState(initialScreenHeight);
 
   useLayoutEffect(() => {
