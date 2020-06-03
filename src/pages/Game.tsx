@@ -20,6 +20,7 @@ import { createNewList } from "../util/createNewList";
 
 import { useAudioContext, SoundEffect } from "../context/AudioContext";
 import Tooltip from "../components/Tooltip";
+import Checkbox from "../components/Checkbox";
 
 const Modal = styled(Card)`
   position: absolute;
@@ -100,18 +101,6 @@ const OptionsWrapper = styled.div`
   padding: 15px 0px;
 `;
 
-const FlexBox = styled.div`
-  display: flex;
-  align-items: center;
-  user-select: none;
-  input {
-    margin: 0px 15px;
-  }
-  @media (max-width: 376px) {
-    justify-content: center;
-  }
-`;
-
 const CheckboxWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr max-content;
@@ -128,7 +117,11 @@ function Game() {
   const { areQuestionsValid } = listContext.validateQuestions();
 
   const history = useHistory();
-  const { playAudio } = useAudioContext();
+  const {
+    playAudio,
+    isBackgroundMusicDisabled,
+    setIsBackgroundMusicDisabled,
+  } = useAudioContext();
 
   const [inputRef] = useState(createRef<HTMLInputElement>());
   const [isStarted, setIsStarted] = useState(false);
@@ -151,6 +144,10 @@ function Game() {
   const { screenWidth, screenHeight } = useResizeHandler();
   const meteorSize = 120;
 
+  useEffect(() => {
+    setIsBackgroundMusicDisabled(() => false);
+  }, [setIsBackgroundMusicDisabled]);
+
   // redirect home if there are no valid questions in the list
   useEffect(() => {
     if (
@@ -160,7 +157,13 @@ function Game() {
     ) {
       history.push("/");
     }
-  }, [areQuestionsValid, history, initialQuestions.length, listContext]);
+  }, [
+    areQuestionsValid,
+    history,
+    initialQuestions.length,
+    listContext,
+    setIsBackgroundMusicDisabled,
+  ]);
 
   const fireCannon = (angle: number, hypotenuse: number) => {
     setCannonRotation(angle);
@@ -344,25 +347,28 @@ function Game() {
 
             <OptionsWrapper>
               <CheckboxWrapper>
-                <FlexBox>
-                  <input
-                    type="checkbox"
-                    id="swap-checkbox"
-                    onChange={() =>
-                      setAreTermsAndDefsSwapped(!areTermsAndDefsSwapped)
-                    }
-                    checked={areTermsAndDefsSwapped}
-                  />
-                  <label htmlFor="swap-checkbox">
-                    <P noMargin>Swap terms and definitions</P>
-                  </label>
-                </FlexBox>
-
+                <Checkbox
+                  id={"swap-checkbox"}
+                  handleChange={() =>
+                    setAreTermsAndDefsSwapped(!areTermsAndDefsSwapped)
+                  }
+                  isChecked={areTermsAndDefsSwapped}
+                  label="Swap terms and definitions"
+                />
                 <Tooltip>
                   Check this if you want to practise remembering terms from
                   their given definition
                 </Tooltip>
               </CheckboxWrapper>
+
+              <Checkbox
+                id={"music-checkbox"}
+                handleChange={() =>
+                  setIsBackgroundMusicDisabled(!isBackgroundMusicDisabled)
+                }
+                isChecked={isBackgroundMusicDisabled}
+                label="Disable background music"
+              />
             </OptionsWrapper>
           </TitleWrapper>
 

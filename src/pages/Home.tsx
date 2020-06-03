@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { H1 } from "../typography/H1";
 import { H2 } from "../typography/H2";
@@ -7,6 +7,7 @@ import { P } from "../typography/P";
 import QuestionCreator from "../components/QuestionCreator/QuestionCreator";
 import FullBackground from "../components/Background/FullBackground";
 import SavedLists from "../components/QuestionCreator/SavedLists";
+import { useAudioContext } from "../context/AudioContext";
 
 const CardWrapper = styled.div`
   display: grid;
@@ -34,6 +35,12 @@ const TitleWrapper = styled.div`
 `;
 
 const Home = () => {
+  const { setIsBackgroundMusicDisabled } = useAudioContext();
+
+  useEffect(() => {
+    setIsBackgroundMusicDisabled(true);
+  }, [setIsBackgroundMusicDisabled]);
+
   return (
     <FullBackground>
       <H1 fontSize="64px">Meteors</H1>
