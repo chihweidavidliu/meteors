@@ -72,7 +72,11 @@ function Game() {
   const { areQuestionsValid } = listContext.validateQuestions();
 
   const history = useHistory();
-  const { playAudio, setIsBackgroundMusicDisabled } = useAudioContext();
+  const {
+    playAudio,
+    setIsBackgroundMusicDisabled,
+    isBackgroundMusicDisabled,
+  } = useAudioContext();
 
   const [inputRef] = useState(createRef<HTMLInputElement>());
   const [isStarted, setIsStarted] = useState(false);
@@ -227,7 +231,9 @@ function Game() {
   };
 
   const handleStartClick = (isRestart?: boolean) => {
-    playAudio(SoundEffect.BACKGROUND);
+    if (!isBackgroundMusicDisabled) {
+      playAudio(SoundEffect.BACKGROUND);
+    }
 
     // save previous results to local storage
     const listWithUpdatedScores = saveResultsToLists();
