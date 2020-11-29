@@ -73,6 +73,7 @@ const Toast = ({
 
   return (
     <StyledCard
+      role="alert"
       style={{
         boxShadow: "0 3px 8px rgba(0, 0, 0, 0.175)",
         marginBottom: "8px",
